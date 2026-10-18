@@ -157,3 +157,32 @@ hr { border: 0; border-top: 1px solid var(--lightgray); margin-block: 36px; }
   .mj-nav-caption { display: none; }
   .mj-intro { padding-top: 28px; }
 }
+/* نمایش فقط ذره‌بین در دکمهٔ جست‌وجو */
+.sidebar .search {
+  flex-grow: 0 !important;
+  width: auto;
+  min-width: 0;
+}
+
+.sidebar .search > .search-button {
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar .search > .search-button > p {
+  display: none;
+}
+
+.sidebar .search > .search-button svg {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+}
+
