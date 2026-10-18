@@ -1,7 +1,8 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
   pageTitle: "منِ جمعی"
-  pageTitleSuffix: ""
+    pageTitleSuffix: " | منِ جمعی"
+
   enableSPA: true
   enablePopovers: true
   analytics:
