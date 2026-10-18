@@ -24,9 +24,8 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
       </nav>
       {home && (
         <section class="mj-intro" aria-label="معرفی سایت">
-          <span class="mj-eyebrow">یادداشت‌هایی برای با هم اندیشیدن</span>
-          <h1>از «من» تا «ما»؛<br />تأملی در زندگی مشترک.</h1>
-          <p>اینجا از نسبت اندیشه و زندگی می‌نویسم؛ از پرسش‌های فلسفی تا تجربه‌های روزمرهٔ زیستن در کنار دیگران.</p>
+          <span class="mj-eyebrow">تاملاتی در باب دین، حکمت واجتماع</span>
+          <p>اینجا از نسبت اندیشه و زندگی می‌نویسم؛ از پرسش‌های فلسفی تا امتدادات اجتماعی.</p>
           <a class="mj-read" href={`${root}/notes`}>خواندن جستارها <span aria-hidden="true">←</span></a>
         </section>
       )}
