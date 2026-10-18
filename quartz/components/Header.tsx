@@ -13,7 +13,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   return (
     <header class="mj-header" dir="rtl">
       <div class="mj-masthead">
-        <a class="mj-brand" href={`${root}/`} aria-label="منِ جمعی ـ خانه">منِ جمعی
+      <a class="mj-brand" href={`${root}/`} aria-label="منِ جمعی ـ خانه">منِ جمعی</a>
         <p class="mj-tagline">جستارهایی در فلسفه و زندگی اجتماعی</p>
       </div>
       <nav class="mj-nav" aria-label="منوی اصلی">
