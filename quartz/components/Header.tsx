@@ -7,8 +7,8 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
   const home = slug === "index"
   const links = [
     { label: "خانه", path: "", active: home },
-    { label: "یادداشت‌ها", path: "notes", active: slug === "notes" },
-    { label: "دربارهٔ من", path: "about", active: slug === "about" },
+    { label: "جستارها", path: "notes", active: slug === "notes" },
+    { label: "درباره من", path: "about", active: slug === "about" },
   ]
   return (
     <header class="mj-header" dir="rtl">
@@ -27,7 +27,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
           <span class="mj-eyebrow">یادداشت‌هایی برای با هم اندیشیدن</span>
           <h1>از «من» تا «ما»؛<br />تأملی در زندگی مشترک.</h1>
           <p>اینجا از نسبت اندیشه و زندگی می‌نویسم؛ از پرسش‌های فلسفی تا تجربه‌های روزمرهٔ زیستن در کنار دیگران.</p>
-          <a class="mj-read" href={`${root}/notes`}>خواندن یادداشت‌ها <span aria-hidden="true">←</span></a>
+          <a class="mj-read" href={`${root}/notes`}>خواندن جستارها <span aria-hidden="true">←</span></a>
         </section>
       )}
       {children}

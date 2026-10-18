@@ -1,13 +1,13 @@
 # yaml-language-server: $schema=./quartz/plugins/quartz-plugins.schema.json
 configuration:
-  pageTitle: Quartz 5
+  pageTitle: "منِ جمعی"
   pageTitleSuffix: ""
   enableSPA: true
   enablePopovers: true
   analytics:
     provider: plausible
   locale: en-US
-  baseUrl: quartz.jzhao.xyz
+  baseUrl: manejamei.ir
   ignorePatterns:
     - private
     - templates
@@ -131,12 +131,12 @@ plugins:
   - source: "@quartz-community/tag-page"
     enabled: true
   - source: "@quartz-community/explorer"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 50
   - source: "@quartz-community/graph"
-    enabled: true
+    enabled: false
     layout:
       position: right
       priority: 10
@@ -149,7 +149,7 @@ plugins:
       groupOptions:
         grow: true
   - source: "@quartz-community/backlinks"
-    enabled: true
+    enabled: false
     layout:
       position: right
       priority: 50
@@ -158,8 +158,9 @@ plugins:
     layout:
       position: beforeBody
       priority: 10
+      condition: not-index
   - source: "@quartz-community/content-meta"
-    enabled: true
+    enabled: false
     layout:
       position: beforeBody
       priority: 20
@@ -169,7 +170,7 @@ plugins:
       position: beforeBody
       priority: 30
   - source: "@quartz-community/page-title"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 10
@@ -180,13 +181,13 @@ plugins:
       priority: 30
       group: toolbar
   - source: "@quartz-community/reader-mode"
-    enabled: true
+    enabled: false
     layout:
       position: left
       priority: 35
       group: toolbar
   - source: "@quartz-community/breadcrumbs"
-    enabled: true
+    enabled: false
     layout:
       position: beforeBody
       priority: 5
@@ -200,7 +201,7 @@ plugins:
       position: afterBody
       priority: 10
   - source: "@quartz-community/footer"
-    enabled: true
+    enabled: false
     options:
       links:
         GitHub: https://github.com/jackyzha0/quartz
@@ -223,7 +224,7 @@ plugins:
     options: {}
     order: 50
   - source: "@quartz-community/note-properties"
-    enabled: true
+    enabled: false
     options:
       includeAll: false
       includedProperties:
