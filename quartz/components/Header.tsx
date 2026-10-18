@@ -20,7 +20,7 @@ const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) =
         {links.map((link) => (
           <a key={link.path} href={`${root}/${link.path}`} aria-current={link.active ? "page" : undefined}>{link.label}</a>
         ))}
-        <span class="mj-nav-caption" aria-hidden="true">فلسفه · جامعه · زندگی</span>
+        <span class="mj-nav-caption" aria-hidden="true">دین · فلسفه · جامعه</span>
       </nav>
       {home && (
         <section class="mj-intro" aria-label="معرفی سایت">
