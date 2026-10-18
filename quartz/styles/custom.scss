@@ -105,3 +105,7 @@ hr { border: 0; border-top: 1px solid var(--lightgray); margin-block: 36px; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+/* مخفی‌کردن فهرست اضافی نوار کناری */
+.page > #quartz-body .sidebar.left .explorer {
+  display: none;
+}
