@@ -16,11 +16,25 @@ export const DefaultFrame: PageFrame = {
   render({ componentData, header, beforeBody, pageBody: Content, afterBody, left, right, footer }: PageFrameProps) {
     const slug = String(componentData.fileData.slug ?? "index")
     const root = pathToRoot(componentData.fileData.slug!)
-    const categories = [
+    const defaultCategories = [
       { slug: "notes/philosophy", title: "یادداشت‌های فلسفی", description: "درنگ‌هایی در فلسفه، حکمت و فلسفهٔ علوم اجتماعی" },
       { slug: "notes/howzeh", title: "یادداشت‌های حوزوی", description: "یادداشت‌هایی از درس، بحث و پژوهش‌های حوزوی" },
       { slug: "notes/free", title: "یادداشت‌های آزاد", description: "تأملات و نوشته‌هایی بیرون از مرزبندی‌های موضوعی" },
     ]
+    // Topic index pages are the source of truth; keep existing topics as fallbacks.
+    const topicMap = new Map(defaultCategories.map((category) => [category.slug, category]))
+    for (const file of componentData.allFiles) {
+      const topicSlug = String(file.slug ?? "")
+      if (!/^notes\/[^/]+\/index$/.test(topicSlug) || file.frontmatter?.draft) continue
+      const categorySlug = topicSlug.replace(/\/index$/, "")
+      const fallback = topicMap.get(categorySlug)
+      topicMap.set(categorySlug, {
+        slug: categorySlug,
+        title: String(file.frontmatter?.title ?? fallback?.title ?? categorySlug.split("/").pop()),
+        description: String(file.frontmatter?.description ?? fallback?.description ?? ""),
+      })
+    }
+    const categories = Array.from(topicMap.values())
     const currentCategory = categories.find((category) => category.slug === slug.replace(/\/index$/, ""))
     const isNote = !currentCategory && categories.some((category) => slug.startsWith(`${category.slug}/`)) && !slug.endsWith("/index")
     const wordCount = (readingText(componentData.tree as ReadingNode).match(/\S+/gu) ?? []).length
