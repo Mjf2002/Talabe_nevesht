@@ -43,11 +43,9 @@
         "slug": ""
       }
     ],
-    "featuredEnabled": true,
+    "featuredEnabled": false,
     "featuredTitle": "نوشته‌های منتخب",
-    "featuredNotes": [
-      "notes/start/چرا منِ جمعی؟"
-    ],
+    "featuredNotes": [],
     "pathsEnabled": false,
     "pathsTitleEnabled": false
   },
