@@ -77,10 +77,10 @@ export const DefaultFrame: PageFrame = {
           <div class="page-footer">{afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer">
-            <a href={`${root}/`}>{settings.header.title}</a><span>{settings.footer.text}</span>
-            <div class="mj-contact-links">
+            <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
+            {settings.footer.links.length > 0 && <div class="mj-contact-links">
               {settings.footer.links.map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
-            </div>
+            </div>}
           </footer>
         </div>
         {footer.map((Component) => <Component {...componentData} />)}
