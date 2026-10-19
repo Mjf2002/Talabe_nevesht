@@ -18,13 +18,26 @@ export const DefaultFrame: PageFrame = {
     const slug = String(componentData.fileData.slug ?? "index")
     const normalizedSlug = slug.replace(/\/index$/, "")
     const root = pathToRoot(componentData.fileData.slug!)
-    const categories = componentData.allFiles.filter((file) => /^notes\/[^/]+\/index$/.test(String(file.slug ?? "")) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password).map((file) => ({
+    const allCategories = componentData.allFiles.filter((file) => /^notes\/[^/]+\/index$/.test(String(file.slug ?? "")) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password).map((file) => ({
       slug: String(file.slug).replace(/\/index$/, ""),
       title: String(file.frontmatter?.title ?? String(file.slug).split("/")[1]),
       description: String(file.frontmatter?.description ?? ""),
+      parent: String(file.frontmatter?.parentTopic ?? ""),
       order: Number(file.frontmatter?.order) || 0,
     })).sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, "fa"))
+    const categories = allCategories.filter((category) => {
+      const seen = new Set([category.slug]); let parent = category.parent;
+      while (parent) {
+        const ancestor = allCategories.find((c) => c.slug === `notes/${parent}`);
+        if (!ancestor || seen.has(ancestor.slug)) return false;
+        seen.add(ancestor.slug); parent = ancestor.parent;
+      }
+      return true;
+    })
+    const rootCategories = categories.filter((category) => !category.parent)
     const currentCategory = categories.find((category) => category.slug === normalizedSlug)
+    const children = categories.filter((category) => currentCategory && `notes/${category.parent}` === currentCategory.slug)
+    const parentCategory = categories.find((category) => currentCategory?.parent && category.slug === `notes/${currentCategory.parent}`)
     const publicNotes = componentData.allFiles.filter((file) => {
       const s = String(file.slug ?? "")
       return s.startsWith("notes/") && !s.endsWith("/index") && !categories.some((c) => c.slug === s) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password
@@ -64,12 +77,14 @@ export const DefaultFrame: PageFrame = {
               <h2>{settings.home.recentTitle}</h2>
               <ul>{recent.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
             </section>}
-            {slug === "index" && <section class="mj-home-topics"><h2>{settings.home.topicsTitle}</h2><nav class="mj-home-cards mj-topic-cards" aria-label="دسته‌های اصلی">{categories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>}
+            {slug === "index" && <section class="mj-home-topics"><h2>{settings.home.topicsTitle}</h2><nav class="mj-home-cards mj-topic-cards" aria-label="دسته‌های اصلی">{rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>}
             {(slug === "notes" || slug === "notes/index") && <nav class="mj-home-cards mj-topic-cards" aria-label="موضوع‌های یادداشت‌ها">
-              {categories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}
+              {rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}
             </nav>}
             {currentCategory && <section class="mj-directory" aria-label={`فهرست ${currentCategory.title}`}>
               <a class="internal mj-category-back" href={`${root}/notes`}>بازگشت به موضوع‌ها</a>
+              {parentCategory && <p><a class="internal" href={`${root}/${parentCategory.slug}/`}>بازگشت به {parentCategory.title}</a></p>}
+              {children.length > 0 && <section><h2>زیرموضوع‌ها</h2><nav class="mj-home-cards mj-topic-cards" aria-label="زیرموضوع‌ها">{children.map((category) => <a key={category.slug} class="internal" href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>}
               <p class="mj-count">{pages.length.toLocaleString("fa-IR")} یادداشت</p>
               {pages.length ? <ul>{pages.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul> : <p>هنوز یادداشتی منتشر نشده است.</p>}
             </section>}
