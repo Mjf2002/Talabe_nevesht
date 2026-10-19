@@ -2,7 +2,7 @@
 'use strict';
 const C=AdminCore,$=s=>document.querySelector(s), main=$('#main');
 let store=null, files=[], notes=[], topics=[], cfg=null,cfgPath=null,cfgRaw=null,settings=null,settingsRaw=null,view='overview',dirty=false,working=false;
-const pages=[['overview','پیشخوان'],['notes','نوشته‌ها و صفحه‌ها'],['topics','باکس‌ها و پوشه‌ها'],['settings','هدر و ظاهر سایت'],['footer','پایین سایت (فوتر)'],['plugins','افزونه‌های Quartz'],['files','فایل‌ها و جزئیات'],['backups','پشتیبان و بازیابی'],['guide','راهنما و انتشار']];
+const pages=[['overview','پیشخوان'],['notes','نوشته‌ها و صفحه‌ها'],['topics','باکس‌ها و پوشه‌ها'],['home','خانه و نوشته‌های منتخب'],['settings','هدر و ظاهر سایت'],['footer','پایین سایت (فوتر)'],['plugins','افزونه‌های Quartz'],['files','فایل‌ها و جزئیات'],['backups','پشتیبان و بازیابی'],['guide','راهنما و انتشار']];
 function el(tag,attrs={},...children){const n=document.createElement(tag);for(const[k,v]of Object.entries(attrs)){if(k.startsWith('on'))n.addEventListener(k.slice(2),v);else if(k==='class')n.className=v;else if(k==='checked')n.checked=v;else if(k==='value')n.value=v;else n.setAttribute(k,v);}for(const c of children.flat(Infinity))if(c!==null&&c!==undefined)n.append(c instanceof Node?c:document.createTextNode(String(c)));return n;}
 function btn(text,fn,cls=''){return el('button',{type:'button',class:cls,onclick:()=>run(fn)},text);}
 function input(value='',attrs={}){return el('input',{value,...attrs});}
@@ -42,7 +42,25 @@ $('#connect').addEventListener('click',()=>run(async()=>{
 $('#refresh').addEventListener('click',()=>run(async()=>{if(!leave())return;await load();dirty=false;await render();message('فایل‌ها دوباره از دیسک خوانده شدند.');}));
 async function saved(label,changes,rerender=true){const id=await store.transaction(label,changes);dirty=false;await load();if(rerender)await render();message(label+' با موفقیت ذخیره و دوباره از دیسک بررسی شد.\nپشتیبان: '+id+'\nاین تغییر هنوز آنلاین منتشر نشده است.');return id;}
 async function render(){main.replaceChildren();refreshNav();if(!store&&view!=='guide'){heading('به پنل مدیریت خوش آمدید','ابتدا «انتخاب پوشهٔ پروژه» را بزنید.');main.append(warn('پوشهٔ پروژهٔ GitHub Desktop را انتخاب کنید، نه پوشهٔ ZIP دانلودشده و نه فقط پوشهٔ content. هیچ رمز یا توکنی لازم نیست.'));return;}
- const renderers={overview:overview,notes:noteList,topics:topicList,settings:settingsPage,footer:footerPage,plugins:pluginsPage,files:filesPage,backups:backupPage,guide:guidePage};await renderers[view]();main.focus({preventScroll:true});}
+ const renderers={overview:overview,notes:noteList,topics:topicList,home:homePage,settings:settingsPage,footer:footerPage,plugins:pluginsPage,files:filesPage,backups:backupPage,guide:guidePage};await renderers[view]();main.focus({preventScroll:true});}
+function noteSlug(n){return n.path.replace(/^content\//,'').replace(/\.md$/,'').replace(/\/index$/,'');}
+function selectableNote(n){return n.path.startsWith('content/notes/')&&!/\/index\.md$/.test(n.path)&&!n.meta.draft&&!n.meta.unlisted&&!n.meta.password;}
+function notePicker(initial=[],exclude=''){
+ const selected=new Set(Array.isArray(initial)?initial.filter(x=>typeof x==='string'&&x!==exclude):[]);
+ const candidates=notes.filter(n=>selectableNote(n)&&noteSlug(n)!==exclude);
+ const box=el('div',{class:'panel'}),search=input('',{placeholder:'جست‌وجوی عنوان یا مسیر نوشته'}),chosen=el('div',{class:'list'}),list=el('div',{class:'list'});
+ box.append(el('p',{class:'muted'},'نوشته‌ها را انتخاب کنید؛ با ↑ و ↓ ترتیب نمایش را تغییر دهید. نوشته‌های پیش‌نویس، پنهان و رمزدار در سایت پیشنهاد نمی‌شوند.'),search,el('h3',{},'انتخاب‌شده‌ها'),chosen,el('h3',{},'نوشته‌های قابل انتخاب'),list);
+ function draw(){chosen.replaceChildren();list.replaceChildren();const values=[...selected];
+ for(const slug of values){const n=candidates.find(n=>noteSlug(n)===slug);chosen.append(el('div',{class:'item'},el('div',{class:'info'},el('b',{},n?n.title:'ناموجود یا غیرقابل نمایش'),el('small',{class:'ltr'},slug)),el('div',{class:'actions'},btn('↑',()=>move(slug,-1)),btn('↓',()=>move(slug,1)),btn('برداشتن',()=>{selected.delete(slug);dirty=true;draw();}))));}
+ if(!values.length)chosen.append(el('p',{class:'muted'},'هنوز نوشته‌ای انتخاب نشده است.'));
+ const q=search.value.trim().toLocaleLowerCase();for(const n of candidates.filter(n=>(n.title+' '+n.path).toLocaleLowerCase().includes(q))){const slug=noteSlug(n),c=check(n.title,selected.has(slug));c.i.addEventListener('change',()=>{if(c.i.checked)selected.add(slug);else selected.delete(slug);dirty=true;draw();});list.append(el('div',{class:'item'},c.node,el('small',{class:'ltr'},n.path)));}}
+ function move(slug,delta){const a=[...selected],i=a.indexOf(slug),j=i+delta;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];selected.clear();a.forEach(x=>selected.add(x));dirty=true;draw();}
+ search.addEventListener('input',e=>{e.stopPropagation();draw();});draw();return {node:box,value:()=>[...selected]};
+}
+function homePage(){heading('خانه و نوشته‌های منتخب','چند نوشته را برای نمایش در صفحهٔ خانه انتخاب کنید. این بخش مستقل از نوشته‌های اخیر است.');if(!settings){main.append(warn('فایل تنظیمات اختصاصی سایت نصب نشده است.'));return;}
+ const enabled=check('نمایش نوشته‌های منتخب در خانه',settings.home.featuredEnabled!==false),title=input(settings.home.featuredTitle||'نوشته‌های منتخب'),picker=notePicker(settings.home.featuredNotes||[]);
+ main.append(enabled.node,field('عنوان بخش منتخب‌ها',title),picker.node,btn('ذخیرهٔ صفحهٔ خانه',async()=>{const next=structuredClone(settings);next.home.featuredEnabled=enabled.i.checked;next.home.featuredTitle=title.value.trim()||'نوشته‌های منتخب';next.home.featuredNotes=picker.value();C.validateSettings(next);await saved('انتخاب نوشته‌های خانه',[{path:'quartz/site-settings.json',before:settingsRaw,after:JSON.stringify(next,null,2)+'\n'}]);},'primary'));dirty=false;
+}
 function footerPage(){
  heading('پایین سایت (فوتر)','ویرایش جملهٔ «یادداشت‌هایی برای با هم اندیشیدن» در انتهای سایت؛ این جمله مستقل از نام سایت است.');
  if(!settings){main.append(warn('ابتدا فایل quartz/site-settings.json و قالب همراه پنل جدید را نصب کنید.'));return;}
@@ -67,8 +85,9 @@ function noteEditor(note=null,preset=''){
  if(note&&!Array.from(folder.options).some(o=>o.value===note.path.slice(0,note.path.lastIndexOf('/'))))folder.append(el('option',{value:note.path.slice(0,note.path.lastIndexOf('/'))},note.path.slice(0,note.path.lastIndexOf('/'))));
  if(note)folder.value=note.path.slice(0,note.path.lastIndexOf('/'));
  const filename=input(old?old.split('/').pop().replace(/\.md$/,''):'', {class:'ltr',placeholder:'نام-فایل'});const date=input(note?.meta.date?String(note.meta.date).slice(0,10):new Date().toISOString().slice(0,10),{type:'date'});const tags=input(Array.isArray(note?.meta.tags)?note.meta.tags.join('، '):String(note?.meta.tags||''));const description=input(note?.meta.description||'');const draft=check('پیش‌نویس (نمایش‌ندادن در سایت)',note?.meta.draft);const body=area(note?.body||'','body-editor');
- const extra={...(note?.meta||{})};for(const k of ['title','date','tags','description','draft'])delete extra[k];const advanced=area(C.configDump('x.yaml',extra),'code');
- main.append(field('عنوان نوشته',title),el('div',{class:'grid'},field('پوشه',folder),field('نام فایل، بدون .md',filename,'تغییر مسیر نوشتهٔ قدیمی می‌تواند لینک آن را بشکند.'),field('تاریخ',date)),field('خلاصه',description),field('برچسب‌ها',tags,'با ویرگول فارسی یا انگلیسی جدا کنید.'),draft.node,field('متن نوشته (Markdown)',body));
+ const related=notePicker(note?.meta.recommendedNotes||[],note?noteSlug(note):'');
+ const extra={...(note?.meta||{})};for(const k of ['title','date','tags','description','draft','recommendedNotes'])delete extra[k];const advanced=area(C.configDump('x.yaml',extra),'code');
+ main.append(field('عنوان نوشته',title),el('div',{class:'grid'},field('پوشه',folder),field('نام فایل، بدون .md',filename,'تغییر مسیر نوشتهٔ قدیمی می‌تواند لینک آن را بشکند.'),field('تاریخ',date)),field('خلاصه',description),field('برچسب‌ها',tags,'با ویرگول فارسی یا انگلیسی جدا کنید.'),draft.node,field('متن نوشته (Markdown)',body),el('h2',{},'نوشته‌های پیشنهادی در پایان این نوشته'),related.node);
  const media=input('',{type:'file',accept:'image/png,image/jpeg,image/webp,image/gif,image/avif'});main.append(el('details',{},el('summary',{},'افزودن تصویر به متن'),field('تصویر (حداکثر ۱۵ مگابایت)',media),btn('ذخیرهٔ تصویر و درج لینک',async()=>{
    const f=media.files[0];if(!f)throw Error('ابتدا یک تصویر انتخاب کنید.');if(f.size>15*1024*1024)throw Error('اندازهٔ تصویر بیشتر از ۱۵ مگابایت است.');if(!['image/png','image/jpeg','image/webp','image/gif','image/avif'].includes(f.type))throw Error('نوع تصویر پشتیبانی نمی‌شود؛ SVG به علت ملاحظات امنیتی پذیرفته نمی‌شود.');
    const ext={ 'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/gif':'gif','image/avif':'avif'}[f.type];const p='content/assets/'+Date.now()+'-'+(C.slug(f.name.replace(/\.[^.]+$/,''))||'image')+'.'+ext;
@@ -79,7 +98,7 @@ function noteEditor(note=null,preset=''){
  const save=async()=>{
    if(!title.value.trim())throw Error('عنوان نوشته را وارد کنید.');const name=C.path(filename.value.trim());if(name.includes('/'))throw Error('نام فایل نباید / داشته باشد.');
    if(!name)throw Error('نام فایل خالی است.');const p=C.path(folder.value+'/'+name+'.md');if(!p.startsWith('content/'))throw Error('نوشته باید داخل content باشد.');if(!note&&name==='index'&&p!=='content/index.md')throw Error('برای ساخت باکس موضوعی از بخش باکس‌ها استفاده کنید.');
-   const meta=C.yaml(advanced.value);meta.title=title.value.trim();if(date.value)meta.date=date.value;else delete meta.date;meta.tags=tags.value.split(/[,،]/).map(s=>s.trim()).filter(Boolean);if(description.value.trim())meta.description=description.value.trim();else delete meta.description;meta.draft=draft.i.checked;
+   const meta=C.yaml(advanced.value);meta.title=title.value.trim();if(date.value)meta.date=date.value;else delete meta.date;meta.tags=tags.value.split(/[,،]/).map(s=>s.trim()).filter(Boolean);if(description.value.trim())meta.description=description.value.trim();else delete meta.description;meta.draft=draft.i.checked;meta.recommendedNotes=related.value().filter(s=>s!==p.replace(/^content\//,'').replace(/\.md$/,'').replace(/\/index$/,''));
    const text=C.markdown(meta,body.value);const changes=[];
    if(note&&p!==note.path){if(!confirm('مسیر نوشته تغییر می‌کند. لینک‌های قدیمی و پیوندهای داخلی خودکار اصلاح نمی‌شوند. ادامه می‌دهید؟'))return;changes.push({path:note.path,before:note.raw,after:null});}
    const before=note&&p===note.path?note.raw:null;changes.push({path:p,before,after:text});await saved('ذخیرهٔ نوشته',changes,false);const updated=notes.find(n=>n.path===p);noteEditor(updated);dirty=false;

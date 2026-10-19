@@ -42,6 +42,16 @@ export const DefaultFrame: PageFrame = {
       const s = String(file.slug ?? "")
       return s.startsWith("notes/") && !s.endsWith("/index") && !categories.some((c) => c.slug === s) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password
     })
+    const homeSelection = settings.home as typeof settings.home & { featuredNotes?: unknown; featuredEnabled?: boolean; featuredTitle?: string }
+    const selectedNotes = (value: unknown) => {
+      const slugs = Array.isArray(value) ? [...new Set(value.filter((s): s is string => typeof s === "string"))] : []
+      return slugs.filter((s) => s !== normalizedSlug).flatMap((s) => {
+        const file = publicNotes.find((file) => String(file.slug) === s)
+        return file ? [file] : []
+      })
+    }
+    const featured = selectedNotes(homeSelection.featuredNotes)
+    const recommended = selectedNotes(componentData.fileData.frontmatter?.recommendedNotes)
     const isNote = publicNotes.some((file) => String(file.slug) === slug)
     const wordCount = (readingText(componentData.tree as ReadingNode).match(/\S+/gu) ?? []).length
     const readingMinutes = Math.max(1, Math.ceil(wordCount / settings.reading.wordsPerMinute))
@@ -73,6 +83,10 @@ export const DefaultFrame: PageFrame = {
               <a href={`${root}/about`}><span class="mj-card-label">آشنایی</span><strong>دربارهٔ من</strong><span>نویسنده و این فضای نوشتن ←</span></a>
               <a href={`${root}/contact`}><span class="mj-card-label">گفت‌وگو</span><strong>راه ارتباط</strong><span>برای ادامهٔ گفت‌وگو ←</span></a>
             </nav>}
+            {slug === "index" && homeSelection.featuredEnabled !== false && featured.length > 0 && <section class="mj-recent-notes" aria-label={homeSelection.featuredTitle || "نوشته‌های منتخب"}>
+              <h2>{homeSelection.featuredTitle || "نوشته‌های منتخب"}</h2>
+              <ul>{featured.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
+            </section>}
             {slug === "index" && settings.home.recentEnabled && recent.length > 0 && <section class="mj-recent-notes" aria-label={settings.home.recentTitle}>
               <h2>{settings.home.recentTitle}</h2>
               <ul>{recent.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
@@ -87,6 +101,10 @@ export const DefaultFrame: PageFrame = {
               {children.length > 0 && <section><h2>زیرموضوع‌ها</h2><nav class="mj-home-cards mj-topic-cards" aria-label="زیرموضوع‌ها">{children.map((category) => <a key={category.slug} class="internal" href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>}
               <p class="mj-count">{pages.length.toLocaleString("fa-IR")} یادداشت</p>
               {pages.length ? <ul>{pages.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul> : <p>هنوز یادداشتی منتشر نشده است.</p>}
+            </section>}
+            {isNote && recommended.length > 0 && <section class="mj-recent-notes" aria-label="در ادامه بخوانید">
+              <h2>در ادامه بخوانید</h2>
+              <ul>{recommended.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
             </section>}
           </main>
           <div class="page-footer">{afterBody.map((Component) => <Component {...componentData} />)}</div>
