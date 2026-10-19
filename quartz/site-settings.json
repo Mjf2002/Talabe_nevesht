@@ -45,7 +45,9 @@
     ],
     "featuredEnabled": true,
     "featuredTitle": "نوشته‌های منتخب",
-    "featuredNotes": []
+    "featuredNotes": [],
+    "pathsEnabled": false,
+    "pathsTitleEnabled": false
   },
   "footer": {
     "text": "محلی برای اندیشیدن درباره اندیشه ها",
