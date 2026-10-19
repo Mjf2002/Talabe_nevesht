@@ -43,9 +43,11 @@
         "slug": ""
       }
     ],
-    "featuredEnabled": false,
+    "featuredEnabled": true,
     "featuredTitle": "نوشته‌های منتخب",
-    "featuredNotes": [],
+    "featuredNotes": [
+      "notes/howzeh/FIRSTE"
+    ],
     "pathsEnabled": false,
     "pathsTitleEnabled": false
   },
