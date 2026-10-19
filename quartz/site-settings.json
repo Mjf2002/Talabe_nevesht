@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "header": {
+    "title": "منِ جمعی",
+    "subtitle": "یادداشت‌های یک طلبه و پژوهشگر علوم انسانی",
+    "links": [
+      { "label": "خانه", "href": "/" },
+      { "label": "فهرست", "href": "/notes" },
+      { "label": "دربارهٔ من", "href": "/about" },
+      { "label": "راه ارتباط", "href": "/contact" }
+    ]
+  },
+  "home": {
+    "recentEnabled": true,
+    "recentTitle": "تازه‌ترین نوشته‌ها",
+    "recentCount": 5,
+    "topicsTitle": "دسته‌های اصلی"
+  },
+  "footer": { "text": "منِ جمعی", "links": [] },
+  "appearance": { "accent": "#187f83", "cardRadius": 14, "fontSize": 17 },
+  "reading": { "enabled": true, "wordsPerMinute": 200 },
+  "backToTop": true
+}

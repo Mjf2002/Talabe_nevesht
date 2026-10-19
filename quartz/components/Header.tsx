@@ -1,32 +1,47 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { pathToRoot } from "../util/path"
+import { settings, siteHref } from "./siteSettings"
 
 const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentProps) => {
   const root = pathToRoot(fileData.slug!)
   const slug = String(fileData.slug ?? "index").replace(/\/index$/, "")
-  const links = [
-    { label: "خانه", path: "", slug: "index" },
-    { label: "فهرست", path: "notes", slug: "notes" },
-    { label: "دربارهٔ من", path: "about", slug: "about" },
-    { label: "راه ارتباط", path: "contact", slug: "contact" },
-  ]
+  const links = settings.header.links
   return (
     <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-heading-row">
-        <a class="mj-identity" href={`${root}/`} aria-label="منِ جمعی؛ خانه">
-          <span class="mj-wordmark">منِ جمعی</span>
-          <span class="mj-subtitle">جایی برای نوشتن و اندیشیدن</span>
+        <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
+          <span class="mj-wordmark">{settings.header.title}</span>
+          <span class="mj-subtitle">{settings.header.subtitle}</span>
         </a>
         <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
       </div>
       <nav class="mj-navigation" aria-label="منوی اصلی">
-        {links.map((link) => <a key={link.slug} href={`${root}/${link.path}`} aria-current={(slug === link.slug || (link.slug === "notes" && slug.startsWith("notes/"))) ? "page" : undefined}>{link.label}</a>)}
+        {links.map((link, index) => {
+          const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
+          const active = slug === target || (target === "notes" && slug.startsWith("notes/"))
+          return <a key={index} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}>{link.label}</a>
+        })}
       </nav>
       {children}
     </header>
   )
 }
+
+Header.css = `
+.center { --secondary: var(--mj-admin-accent, #4f6d5c); --tertiary: var(--mj-admin-accent, #4f6d5c); }
+.center #mj-main, .center .page-header, .center .mj-site-footer { width: 100%; max-width: var(--mj-admin-width, 850px); margin-inline: auto; }
+.center #mj-main, .center #mj-main article { font-size: var(--mj-admin-font-size, 17px); }
+.center #mj-main article p { font-size: inherit; }
+.center #mj-main article, .center #mj-main article p, .center #mj-main article li { line-height: var(--mj-admin-line-height, 1.95); }
+.center #mj-main .mj-home-cards a { border-radius: var(--mj-admin-radius, 18px); }
+.center .mj-navigation a[aria-current="page"], .center #mj-main a:not(.tag-link) { color: var(--mj-admin-accent, #4f6d5c); }
+.center .mj-contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+.center .mj-announcement { padding: .7rem 1rem; margin-top: 1rem; border-inline-start: 3px solid var(--mj-admin-accent); background: var(--lightgray); border-radius: 6px; }
+.center .mj-recent-notes { margin-top: 2.5rem; }
+.center .mj-recent-notes ul { padding-inline-start: 1.4rem; }
+.center .mj-recent-notes li { margin-block: .7rem; }
+`
 
 Header.afterDOMLoaded = `
 (() => {

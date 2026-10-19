@@ -1,6 +1,7 @@
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
 import { pathToRoot } from "../../util/path"
+import { settings, siteHref } from "../siteSettings"
 const Header = HeaderConstructor()
 
 type ReadingNode = { type: string; value?: string; tagName?: string; children?: ReadingNode[] }
@@ -15,76 +16,77 @@ export const DefaultFrame: PageFrame = {
   name: "default",
   render({ componentData, header, beforeBody, pageBody: Content, afterBody, left, right, footer }: PageFrameProps) {
     const slug = String(componentData.fileData.slug ?? "index")
+    const normalizedSlug = slug.replace(/\/index$/, "")
     const root = pathToRoot(componentData.fileData.slug!)
-    const defaultCategories = [
-      { slug: "notes/philosophy", title: "یادداشت‌های فلسفی", description: "درنگ‌هایی در فلسفه، حکمت و فلسفهٔ علوم اجتماعی" },
-      { slug: "notes/howzeh", title: "یادداشت‌های حوزوی", description: "یادداشت‌هایی از درس، بحث و پژوهش‌های حوزوی" },
-      { slug: "notes/free", title: "یادداشت‌های آزاد", description: "تأملات و نوشته‌هایی بیرون از مرزبندی‌های موضوعی" },
-    ]
-    // Topic index pages are the source of truth; keep existing topics as fallbacks.
-    const topicMap = new Map(defaultCategories.map((category) => [category.slug, category]))
-    for (const file of componentData.allFiles) {
-      const topicSlug = String(file.slug ?? "")
-      if (!/^notes\/[^/]+\/index$/.test(topicSlug) || file.frontmatter?.draft) continue
-      const categorySlug = topicSlug.replace(/\/index$/, "")
-      const fallback = topicMap.get(categorySlug)
-      topicMap.set(categorySlug, {
-        slug: categorySlug,
-        title: String(file.frontmatter?.title ?? fallback?.title ?? categorySlug.split("/").pop()),
-        description: String(file.frontmatter?.description ?? fallback?.description ?? ""),
-      })
-    }
-    const categories = Array.from(topicMap.values())
-    const currentCategory = categories.find((category) => category.slug === slug.replace(/\/index$/, ""))
-    const isNote = !currentCategory && categories.some((category) => slug.startsWith(`${category.slug}/`)) && !slug.endsWith("/index")
-    const wordCount = (readingText(componentData.tree as ReadingNode).match(/\S+/gu) ?? []).length
-    const readingMinutes = Math.max(1, Math.ceil(wordCount / 200))
-    const pages = componentData.allFiles.filter((file) => {
+    const categories = componentData.allFiles.filter((file) => /^notes\/[^/]+\/index$/.test(String(file.slug ?? "")) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password).map((file) => ({
+      slug: String(file.slug).replace(/\/index$/, ""),
+      title: String(file.frontmatter?.title ?? String(file.slug).split("/")[1]),
+      description: String(file.frontmatter?.description ?? ""),
+      order: Number(file.frontmatter?.order) || 0,
+    })).sort((a, b) => a.order - b.order || a.title.localeCompare(b.title, "fa"))
+    const currentCategory = categories.find((category) => category.slug === normalizedSlug)
+    const publicNotes = componentData.allFiles.filter((file) => {
       const s = String(file.slug ?? "")
-      return Boolean(currentCategory) && s.startsWith(`${currentCategory!.slug}/`) && !s.endsWith("/index") && !file.frontmatter?.draft
-    }).sort((a, b) => String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa"))
+      return s.startsWith("notes/") && !s.endsWith("/index") && !categories.some((c) => c.slug === s) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password
+    })
+    const isNote = publicNotes.some((file) => String(file.slug) === slug)
+    const wordCount = (readingText(componentData.tree as ReadingNode).match(/\S+/gu) ?? []).length
+    const readingMinutes = Math.max(1, Math.ceil(wordCount / settings.reading.wordsPerMinute))
+    const pages = publicNotes.filter((file) => currentCategory && String(file.slug).startsWith(`${currentCategory.slug}/`)).sort((a, b) => String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa"))
+    const timestamp = (file: typeof publicNotes[number]) => {
+      const fm = file.frontmatter
+      const date = Date.parse(String(fm?.date ?? fm?.created ?? ""))
+      return Number.isNaN(date) ? 0 : date
+    }
+    const recent = [...publicNotes].sort((a, b) => timestamp(b) - timestamp(a) || String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa")).slice(0, settings.home.recentCount)
+    const appearance = settings.appearance
+    const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:850px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
       <>
-        <div class="center">
+        <div class="center" style={style}>
           <div class="page-header">
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
               {header.map((Component) => <Component {...componentData} />)}
             </Header>
             <div class="popover-hint">{beforeBody.map((Component) => <Component {...componentData} />)}
-              {isNote && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
+              {isNote && settings.reading.enabled && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
             </div>
           </div>
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {slug === "index" && <div class="mj-eyebrow">یادداشت‌ها و جستارها</div>}
-            {currentCategory ? <article><h1>{currentCategory.title}</h1></article> : <Content {...componentData} />}
+            {currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
             {slug === "index" && <nav class="mj-home-cards" aria-label="مسیرهای مطالعه">
               <a href={`${root}/notes`}><span class="mj-card-label">خواندن</span><strong>فهرست نوشته‌ها</strong><span>همهٔ یادداشت‌ها در یک نگاه ←</span></a>
               <a href={`${root}/about`}><span class="mj-card-label">آشنایی</span><strong>دربارهٔ من</strong><span>نویسنده و این فضای نوشتن ←</span></a>
               <a href={`${root}/contact`}><span class="mj-card-label">گفت‌وگو</span><strong>راه ارتباط</strong><span>برای ادامهٔ گفت‌وگو ←</span></a>
             </nav>}
-            {slug === "notes" && <nav class="mj-home-cards mj-topic-cards" aria-label="موضوع‌های یادداشت‌ها">
-              {categories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}>
-                <strong>{category.title}</strong>
-                <span>{category.description}</span>
-              </a>)}
+            {slug === "index" && settings.home.recentEnabled && recent.length > 0 && <section class="mj-recent-notes" aria-label={settings.home.recentTitle}>
+              <h2>{settings.home.recentTitle}</h2>
+              <ul>{recent.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
+            </section>}
+            {slug === "index" && <section class="mj-home-topics"><h2>{settings.home.topicsTitle}</h2><nav class="mj-home-cards mj-topic-cards" aria-label="دسته‌های اصلی">{categories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>}
+            {(slug === "notes" || slug === "notes/index") && <nav class="mj-home-cards mj-topic-cards" aria-label="موضوع‌های یادداشت‌ها">
+              {categories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}
             </nav>}
             {currentCategory && <section class="mj-directory" aria-label={`فهرست ${currentCategory.title}`}>
               <a class="internal mj-category-back" href={`${root}/notes`}>بازگشت به موضوع‌ها</a>
               <p class="mj-count">{pages.length.toLocaleString("fa-IR")} یادداشت</p>
-              {pages.length ? <ul>{pages.map((file) => <li key={String(file.slug)}>
-                <a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a>
-
-              </li>)}</ul> : <p>هنوز یادداشتی منتشر نشده است.</p>}
+              {pages.length ? <ul>{pages.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul> : <p>هنوز یادداشتی منتشر نشده است.</p>}
             </section>}
           </main>
           <div class="page-footer">{afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
-          <footer class="mj-site-footer"><a href={`${root}/`}>منِ جمعی</a><span>یادداشت‌هایی برای با هم اندیشیدن</span></footer>
+          <footer class="mj-site-footer">
+            <a href={`${root}/`}>{settings.header.title}</a><span>{settings.footer.text}</span>
+            <div class="mj-contact-links">
+              {settings.footer.links.map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
+            </div>
+          </footer>
         </div>
         {footer.map((Component) => <Component {...componentData} />)}
-        <button class="mj-back-top" type="button" hidden aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">
+        {settings.backToTop && <button class="mj-back-top" type="button" hidden aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 12 6-6 6 6M12 6v13" /></svg>
-        </button>
+        </button>}
       </>
     )
   },
