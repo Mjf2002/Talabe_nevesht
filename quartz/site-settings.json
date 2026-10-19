@@ -26,7 +26,26 @@
     "recentEnabled": true,
     "recentTitle": "تازه‌ترین نوشته‌ها",
     "recentCount": 5,
-    "topicsTitle": "دسته‌های اصلی"
+    "topicsTitle": "دسته‌های اصلی",
+    "startEnabled": true,
+    "startTitle": "برای شروع",
+    "startNotes": [
+      {
+        "title": "چرا من جمعی؟",
+        "slug": "notes/start/چرا منِ جمعی؟"
+      },
+      {
+        "title": "چیستی فلسفه علوم اجتماعی",
+        "slug": ""
+      },
+      {
+        "title": "عنوان سوم",
+        "slug": ""
+      }
+    ],
+    "featuredEnabled": true,
+    "featuredTitle": "نوشته‌های منتخب",
+    "featuredNotes": []
   },
   "footer": {
     "text": "محلی برای اندیشیدن درباره اندیشه ها",
