@@ -19,8 +19,10 @@ function choose(options,current){const s=el('select');for(const [v,l]of options)
 function recordChange(){dirty=true;}
 main.addEventListener('input',recordChange);main.addEventListener('change',recordChange);
 window.addEventListener('beforeunload',e=>{if(dirty||working){e.preventDefault();e.returnValue='';}});
-function refreshNav(){for(const b of $('#nav').children)b.classList.toggle('active',b.dataset.page===view);}
-for(const[id,title]of pages)$('#nav').append(el('button',{'data-page':id,type:'button',onclick:()=>run(async()=>{if(!leave())return;dirty=false;view=id;await render();})},title));
+function refreshNav(){for(const b of $('#nav').querySelectorAll('button[data-page]'))b.classList.toggle('active',b.dataset.page===view);const advanced=$('#nav').querySelector('details');if(advanced&&['plugins','files','backups'].includes(view))advanced.open=true;}
+const advancedNav=el('details',{class:'admin-advanced'},el('summary',{},'ابزارهای پیشرفته'));
+for(const[id,title]of pages){const target=['plugins','files','backups'].includes(id)?advancedNav:$('#nav');target.append(el('button',{'data-page':id,type:'button',onclick:()=>run(async()=>{if(!leave())return;dirty=false;view=id;await render();})},title));}
+$('#nav').append(advancedNav);
 async function load(){
  files=await store.list(); const names=new Set(files.filter(x=>x.kind==='file').map(x=>x.path));
  cfgPath=C.configPath(names);if(!cfgPath)throw Error('تنظیمات Quartz در ریشهٔ این پوشه پیدا نشد. پوشهٔ درست پروژه را انتخاب کنید.');
@@ -66,7 +68,7 @@ function homePage(){heading('خانه و نوشته‌های منتخب','چند
  function shiftStart(i,d){const j=i+d;if(j<0||j>=entries.length)return;[entries[i],entries[j]]=[entries[j],entries[i]];dirty=true;drawStart();}drawStart();
  main.append(el('h2',{},'برای شروع؛ پیش از باکس‌های موضوعی'),startEnabled.node,field('عنوان بخش آغازین',startTitle),el('p',{class:'muted'},'عنوان سوم فعلاً جای‌نگهدار است. برای پیوند دقیق، یادداشت مقصد را انتخاب کنید. عنوان بدون مقصد تا زمان پیدا شدن یادداشت هم‌نام، به‌صورت متن نمایش داده می‌شود.'),rows,btn('افزودن عنوان',()=>{entries.push({title:'',slug:''});dirty=true;drawStart();}),el('hr'));
  const enabled=check('نمایش نوشته‌های منتخب در خانه',settings.home.featuredEnabled!==false),title=input(settings.home.featuredTitle||'نوشته‌های منتخب'),picker=notePicker(settings.home.featuredNotes||[]);
- main.append(enabled.node,field('عنوان بخش منتخب‌ها',title),picker.node,btn('ذخیرهٔ صفحهٔ خانه',async()=>{const next=structuredClone(settings);next.home.startEnabled=startEnabled.i.checked;next.home.startTitle=startTitle.value.trim()||'برای شروع';next.home.startNotes=entries.map(e=>({title:e.title.trim(),slug:e.slug})).filter(e=>e.title||e.slug);next.home.featuredEnabled=enabled.i.checked;next.home.featuredTitle=title.value.trim()||'نوشته‌های منتخب';next.home.featuredNotes=picker.value();C.validateSettings(next);await saved('انتخاب نوشته‌های خانه',[{path:'quartz/site-settings.json',before:settingsRaw,after:JSON.stringify(next,null,2)+'\n'}]);},'primary'));dirty=false;
+ main.append(el('details',{class:'panel'},el('summary',{},'تنظیمات نوشته‌های منتخب'),enabled.node,field('عنوان بخش منتخب‌ها',title),picker.node),btn('ذخیرهٔ صفحهٔ خانه',async()=>{const next=structuredClone(settings);next.home.startEnabled=startEnabled.i.checked;next.home.startTitle=startTitle.value.trim()||'برای شروع';next.home.startNotes=entries.map(e=>({title:e.title.trim(),slug:e.slug})).filter(e=>e.title||e.slug);next.home.featuredEnabled=enabled.i.checked;next.home.featuredTitle=title.value.trim()||'نوشته‌های منتخب';next.home.featuredNotes=picker.value();C.validateSettings(next);await saved('انتخاب نوشته‌های خانه',[{path:'quartz/site-settings.json',before:settingsRaw,after:JSON.stringify(next,null,2)+'\n'}]);},'primary'));dirty=false;
 }
 function footerPage(){
  heading('پایین سایت (فوتر)','ویرایش جملهٔ «یادداشت‌هایی برای با هم اندیشیدن» در انتهای سایت؛ این جمله مستقل از نام سایت است.');

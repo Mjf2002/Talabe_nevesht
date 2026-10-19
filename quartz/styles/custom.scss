@@ -106,3 +106,5 @@ code { unicode-bidi: isolate; }
 .mj-category-back { display: inline-block; margin-bottom: 1rem; font-size: .9rem; }
 .mj-reading-time { font-size: .85rem; color: var(--gray); font-weight: 400; margin: .5rem 0 1rem; line-height: 1.8; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+
+@import "./home-layout.scss";

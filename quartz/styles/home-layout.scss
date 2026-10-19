@@ -1,0 +1,14 @@
+.mj-home-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  direction: rtl;
+  align-items: start;
+  margin-block: 2rem;
+  > section { min-width: 0; }
+  .mj-home-cards { display: grid; grid-template-columns: 1fr; gap: .75rem; }
+  h2 { margin-top: 0; }
+}
+@media (max-width: 700px) {
+  .mj-home-columns { grid-template-columns: 1fr; }
+}

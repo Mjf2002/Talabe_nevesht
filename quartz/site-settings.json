@@ -26,8 +26,8 @@
     "recentEnabled": true,
     "recentTitle": "تازه‌ترین نوشته‌ها",
     "recentCount": 5,
-    "topicsTitle": "دسته‌های اصلی",
-    "startEnabled": false,
+    "topicsTitle": "فهرست موضوعی",
+    "startEnabled": true,
     "startTitle": "برای شروع",
     "startNotes": [
       {
