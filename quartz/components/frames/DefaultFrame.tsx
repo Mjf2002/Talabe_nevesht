@@ -8,9 +8,15 @@ export const DefaultFrame: PageFrame = {
   render({ componentData, header, beforeBody, pageBody: Content, afterBody, left, right, footer }: PageFrameProps) {
     const slug = String(componentData.fileData.slug ?? "index")
     const root = pathToRoot(componentData.fileData.slug!)
+    const categories = [
+      { slug: "notes/philosophy", title: "یادداشت‌های فلسفی", description: "درنگ‌هایی در فلسفه، حکمت و فلسفهٔ علوم اجتماعی" },
+      { slug: "notes/howzeh", title: "یادداشت‌های حوزوی", description: "یادداشت‌هایی از درس، بحث و پژوهش‌های حوزوی" },
+      { slug: "notes/free", title: "یادداشت‌های آزاد", description: "تأملات و نوشته‌هایی بیرون از مرزبندی‌های موضوعی" },
+    ]
+    const currentCategory = categories.find((category) => category.slug === slug.replace(/\/index$/, ""))
     const pages = componentData.allFiles.filter((file) => {
       const s = String(file.slug ?? "")
-      return s && !["index", "about", "contact", "notes"].includes(s) && !s.startsWith("tags/") && !s.endsWith("/index") && !file.frontmatter?.draft
+      return Boolean(currentCategory) && s.startsWith(`${currentCategory!.slug}/`) && !s.endsWith("/index") && !file.frontmatter?.draft
     }).sort((a, b) => String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa"))
     return (
       <>
@@ -23,17 +29,24 @@ export const DefaultFrame: PageFrame = {
           </div>
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {slug === "index" && <div class="mj-eyebrow">یادداشت‌ها و جستارها</div>}
-            <Content {...componentData} />
+            {currentCategory ? <article><h1>{currentCategory.title}</h1></article> : <Content {...componentData} />}
             {slug === "index" && <nav class="mj-home-cards" aria-label="مسیرهای مطالعه">
               <a href={`${root}/notes`}><span class="mj-card-label">خواندن</span><strong>فهرست نوشته‌ها</strong><span>همهٔ یادداشت‌ها در یک نگاه ←</span></a>
               <a href={`${root}/about`}><span class="mj-card-label">آشنایی</span><strong>دربارهٔ من</strong><span>نویسنده و این فضای نوشتن ←</span></a>
               <a href={`${root}/contact`}><span class="mj-card-label">گفت‌وگو</span><strong>راه ارتباط</strong><span>برای ادامهٔ گفت‌وگو ←</span></a>
             </nav>}
-            {slug === "notes" && <section class="mj-directory" aria-label="فهرست یادداشت‌ها">
+            {slug === "notes" && <nav class="mj-home-cards mj-topic-cards" aria-label="موضوع‌های یادداشت‌ها">
+              {categories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}>
+                <strong>{category.title}</strong>
+                <span>{category.description}</span>
+              </a>)}
+            </nav>}
+            {currentCategory && <section class="mj-directory" aria-label={`فهرست ${currentCategory.title}`}>
+              <a class="internal mj-category-back" href={`${root}/notes`}>بازگشت به موضوع‌ها</a>
               <p class="mj-count">{pages.length.toLocaleString("fa-IR")} یادداشت</p>
               {pages.length ? <ul>{pages.map((file) => <li key={String(file.slug)}>
                 <a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a>
-                {file.description && <p>{file.description}</p>}
+
               </li>)}</ul> : <p>هنوز یادداشتی منتشر نشده است.</p>}
             </section>}
           </main>

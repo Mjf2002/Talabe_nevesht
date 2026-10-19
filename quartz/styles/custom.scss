@@ -101,4 +101,7 @@ code { unicode-bidi: isolate; }
   article { font-size: 1rem; }
   .mj-site-footer { margin-top: 48px; }
 }
+.mj-topic-cards > a > strong { font-size: 1.2rem; }
+.mj-topic-cards > a > span { font-size: .88rem; color: var(--gray); line-height: 1.9; font-weight: 400; }
+.mj-category-back { display: inline-block; margin-bottom: 1rem; font-size: .9rem; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
