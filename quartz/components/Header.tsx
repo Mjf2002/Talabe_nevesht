@@ -1,28 +1,49 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { pathToRoot } from "../util/path"
 
-const Header: QuartzComponent = ({ children, fileData }: QuartzComponentProps) => {
+const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentProps) => {
   const root = pathToRoot(fileData.slug!)
-  const slug = String(fileData.slug ?? "index")
+  const slug = String(fileData.slug ?? "index").replace(/\/index$/, "")
   const links = [
-    { label: "خانه", path: "", active: slug === "index" },
-    { label: "جستارها", path: "notes", active: slug === "notes" },
-    { label: "دربارهٔ من", path: "about", active: slug === "about" },
+    { label: "خانه", path: "", slug: "index" },
+    { label: "دربارهٔ من", path: "about", slug: "about" },
+    { label: "فهرست", path: "notes", slug: "notes" },
+    { label: "راه ارتباط", path: "contact", slug: "contact" },
   ]
   return (
-    <header class="mj-header mj-header-refined" dir="rtl">
-      <div class="mj-masthead">
-        <a class="mj-brand" href={`${root}/`} aria-label="منِ جمعی؛ صفحهٔ اصلی">منِ جمعی</a>
-        <p class="mj-tagline">یادداشت‌هایی برای با هم اندیشیدن</p>
+    <header class="mj-site-header" dir="rtl">
+      <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
+      <div class="mj-heading-row">
+        <a class="mj-identity" href={`${root}/`} aria-label="منِ جمعی؛ خانه">
+          <span class="mj-wordmark">منِ جمعی<span aria-hidden="true">.</span></span>
+          <span class="mj-subtitle">جایی برای نوشتن و اندیشیدن</span>
+        </a>
+        <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
       </div>
-      <nav class="mj-nav" aria-label="منوی اصلی">
-        {links.map((link) => (
-          <a key={link.path} href={`${root}/${link.path}`} aria-current={link.active ? "page" : undefined}>{link.label}</a>
-        ))}
-        <span class="mj-nav-caption" aria-hidden="true">فلسفه · جامعه · زندگی</span>
+      <nav class="mj-navigation" aria-label="منوی اصلی">
+        {links.map((link) => <a key={link.slug} href={`${root}/${link.path}`} aria-current={slug === link.slug ? "page" : undefined}>{link.label}</a>)}
       </nav>
       {children}
     </header>
   )
 }
+
+Header.afterDOMLoaded = `
+(() => {
+  const setup = () => {
+    const button = document.querySelector('.mj-back-top');
+    if (!button) return;
+    const update = () => { button.hidden = window.scrollY < 400; };
+    const click = () => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    window.addEventListener('scroll', update, { passive: true });
+    button.addEventListener('click', click);
+    update();
+    window.addCleanup(() => {
+      window.removeEventListener('scroll', update);
+      button.removeEventListener('click', click);
+    });
+  };
+  document.addEventListener('nav', setup);
+})();
+`
 export default (() => Header) satisfies QuartzComponentConstructor
