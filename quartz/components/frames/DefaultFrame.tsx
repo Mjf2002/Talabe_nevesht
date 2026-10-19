@@ -18,7 +18,9 @@ export const DefaultFrame: PageFrame = {
     const slug = String(componentData.fileData.slug ?? "index")
     const normalizedSlug = slug.replace(/\/index$/, "")
     const root = pathToRoot(componentData.fileData.slug!)
-    const allCategories = componentData.allFiles.filter((file) => /^notes\/[^/]+\/index$/.test(String(file.slug ?? "")) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password).map((file) => ({
+    // Reserved for introductory notes, never a topic card (including generated folder pages).
+    const isStartFolder = (value: unknown) => /^notes\/start(?:\/index)?\/?$/.test(String(value ?? ""))
+    const allCategories = componentData.allFiles.filter((file) => !isStartFolder(file.slug) && /^notes\/[^/]+\/index$/.test(String(file.slug ?? "")) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password).map((file) => ({
       slug: String(file.slug).replace(/\/index$/, ""),
       title: String(file.frontmatter?.title ?? String(file.slug).split("/")[1]),
       description: String(file.frontmatter?.description ?? ""),
@@ -40,7 +42,7 @@ export const DefaultFrame: PageFrame = {
     const parentCategory = categories.find((category) => currentCategory?.parent && category.slug === `notes/${currentCategory.parent}`)
     const publicNotes = componentData.allFiles.filter((file) => {
       const s = String(file.slug ?? "")
-      return s.startsWith("notes/") && !s.endsWith("/index") && !categories.some((c) => c.slug === s) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password
+      return s.startsWith("notes/") && !isStartFolder(s) && !s.endsWith("/index") && !categories.some((c) => c.slug === s) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password
     })
     const homeSelection = settings.home as typeof settings.home & { featuredNotes?: unknown; featuredEnabled?: boolean; featuredTitle?: string }
     const selectedNotes = (value: unknown) => {
