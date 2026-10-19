@@ -44,7 +44,7 @@ export const DefaultFrame: PageFrame = {
       const s = String(file.slug ?? "")
       return s.startsWith("notes/") && !isStartFolder(s) && !s.endsWith("/index") && !categories.some((c) => c.slug === s) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password
     })
-    const homeSelection = settings.home as typeof settings.home & { featuredNotes?: unknown; featuredEnabled?: boolean; featuredTitle?: string }
+    const homeSelection = settings.home as typeof settings.home & { featuredNotes?: unknown; featuredEnabled?: boolean; featuredTitle?: string; pathsEnabled?: boolean; pathsTitleEnabled?: boolean }
     const selectedNotes = (value: unknown) => {
       const slugs = Array.isArray(value) ? [...new Set(value.filter((s): s is string => typeof s === "string"))] : []
       return slugs.filter((s) => s !== normalizedSlug).flatMap((s) => {
@@ -93,12 +93,12 @@ export const DefaultFrame: PageFrame = {
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
               <ol>{startNotes.map((entry, index) => <li key={index}>{entry.slug ? <a class="internal" href={`${root}/${entry.slug}`}>{entry.title}</a> : <span>{entry.title}</span>}</li>)}</ol>
             </section>}
-            {slug === "index" && <div class="mj-home-columns"><section class="mj-home-topics"><h2>{settings.home.topicsTitle}</h2><nav class="mj-home-cards mj-topic-cards" aria-label="فهرست موضوعی">{rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>
-            <section class="mj-home-paths"><h2>مسیرهای مطالعه</h2><nav class="mj-home-cards" aria-label="مسیرهای مطالعه">
+            {slug === "index" && <div class={`mj-home-columns${homeSelection.pathsEnabled === false && homeSelection.pathsTitleEnabled === false ? ' mj-home-columns-single' : ''}`}><section class="mj-home-topics"><h2>{settings.home.topicsTitle}</h2><nav class="mj-home-cards mj-topic-cards" aria-label="فهرست موضوعی">{rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>
+            {(homeSelection.pathsEnabled !== false || homeSelection.pathsTitleEnabled !== false) && <section class="mj-home-paths">{homeSelection.pathsTitleEnabled !== false && <h2>مسیرهای مطالعه</h2>}{homeSelection.pathsEnabled !== false && <nav class="mj-home-cards" aria-label="مسیرهای مطالعه">
               <a href={`${root}/notes`}><span class="mj-card-label">خواندن</span><strong>فهرست نوشته‌ها</strong><span>همهٔ یادداشت‌ها در یک نگاه ←</span></a>
               <a href={`${root}/about`}><span class="mj-card-label">آشنایی</span><strong>دربارهٔ من</strong><span>نویسنده و این فضای نوشتن ←</span></a>
               <a href={`${root}/contact`}><span class="mj-card-label">گفت‌وگو</span><strong>راه ارتباط</strong><span>برای ادامهٔ گفت‌وگو ←</span></a>
-            </nav></section></div>}
+            </nav>}</section>}</div>}
             {slug === "index" && homeSelection.featuredEnabled !== false && featured.length > 0 && <section class="mj-recent-notes" aria-label={homeSelection.featuredTitle || "نوشته‌های منتخب"}>
               <h2>{homeSelection.featuredTitle || "نوشته‌های منتخب"}</h2>
               <ul>{featured.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
