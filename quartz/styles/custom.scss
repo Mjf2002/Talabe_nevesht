@@ -104,4 +104,5 @@ code { unicode-bidi: isolate; }
 .mj-topic-cards > a > strong { font-size: 1.2rem; }
 .mj-topic-cards > a > span { font-size: .88rem; color: var(--gray); line-height: 1.9; font-weight: 400; }
 .mj-category-back { display: inline-block; margin-bottom: 1rem; font-size: .9rem; }
+.mj-reading-time { font-size: .85rem; color: var(--gray); font-weight: 400; margin: .5rem 0 1rem; line-height: 1.8; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

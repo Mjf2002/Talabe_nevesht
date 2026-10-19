@@ -3,6 +3,14 @@ import HeaderConstructor from "../Header"
 import { pathToRoot } from "../../util/path"
 const Header = HeaderConstructor()
 
+type ReadingNode = { type: string; value?: string; tagName?: string; children?: ReadingNode[] }
+function readingText(node: ReadingNode): string {
+  if (node.tagName === "script" || node.tagName === "style") return ""
+  if (node.type === "text") return node.value ?? ""
+  const text = (node.children ?? []).map(readingText).join("")
+  return ["p", "div", "li", "br", "h1", "h2", "h3", "blockquote", "pre", "tr"].includes(node.tagName ?? "") ? `${text} ` : text
+}
+
 export const DefaultFrame: PageFrame = {
   name: "default",
   render({ componentData, header, beforeBody, pageBody: Content, afterBody, left, right, footer }: PageFrameProps) {
@@ -14,6 +22,9 @@ export const DefaultFrame: PageFrame = {
       { slug: "notes/free", title: "یادداشت‌های آزاد", description: "تأملات و نوشته‌هایی بیرون از مرزبندی‌های موضوعی" },
     ]
     const currentCategory = categories.find((category) => category.slug === slug.replace(/\/index$/, ""))
+    const isNote = !currentCategory && categories.some((category) => slug.startsWith(`${category.slug}/`)) && !slug.endsWith("/index")
+    const wordCount = (readingText(componentData.tree as ReadingNode).match(/\S+/gu) ?? []).length
+    const readingMinutes = Math.max(1, Math.ceil(wordCount / 200))
     const pages = componentData.allFiles.filter((file) => {
       const s = String(file.slug ?? "")
       return Boolean(currentCategory) && s.startsWith(`${currentCategory!.slug}/`) && !s.endsWith("/index") && !file.frontmatter?.draft
@@ -25,7 +36,9 @@ export const DefaultFrame: PageFrame = {
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
               {header.map((Component) => <Component {...componentData} />)}
             </Header>
-            <div class="popover-hint">{beforeBody.map((Component) => <Component {...componentData} />)}</div>
+            <div class="popover-hint">{beforeBody.map((Component) => <Component {...componentData} />)}
+              {isNote && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
+            </div>
           </div>
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {slug === "index" && <div class="mj-eyebrow">یادداشت‌ها و جستارها</div>}

@@ -11,6 +11,7 @@ import customStyles from "../../styles/custom.scss"
 import popoverStyle from "../../components/styles/popover.scss"
 import { BuildCtx } from "../../util/ctx"
 import { QuartzComponent } from "../../components/types"
+import HeaderConstructor from "../../components/Header"
 import { normalizeResource } from "../../util/resources"
 import { componentRegistry } from "../../components/registry"
 import {
@@ -36,6 +37,9 @@ type ComponentResources = {
 
 function getComponentResources(ctx: BuildCtx): ComponentResources {
   const allComponents: Set<QuartzComponent> = new Set()
+  // Frames render Header directly, outside the layout component registry.
+  // Include its resources so the back-to-top handler reaches the browser.
+  allComponents.add(HeaderConstructor())
 
   for (const emitter of ctx.cfg.plugins.emitters) {
     const components = emitter.getQuartzComponents?.(ctx) ?? []
