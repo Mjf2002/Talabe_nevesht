@@ -21,8 +21,14 @@ export const DefaultFrame: PageFrame = {
             </Header>
             <div class="popover-hint">{beforeBody.map((Component) => <Component {...componentData} />)}</div>
           </div>
-          <div id="mj-main" tabIndex={-1}>
+          <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
+            {slug === "index" && <div class="mj-eyebrow">یادداشت‌ها و جستارها</div>}
             <Content {...componentData} />
+            {slug === "index" && <nav class="mj-home-cards" aria-label="مسیرهای مطالعه">
+              <a href={`${root}/notes`}><span class="mj-card-label">خواندن</span><strong>فهرست نوشته‌ها</strong><span>همهٔ یادداشت‌ها در یک نگاه ←</span></a>
+              <a href={`${root}/about`}><span class="mj-card-label">آشنایی</span><strong>دربارهٔ من</strong><span>نویسنده و این فضای نوشتن ←</span></a>
+              <a href={`${root}/contact`}><span class="mj-card-label">گفت‌وگو</span><strong>راه ارتباط</strong><span>برای ادامهٔ گفت‌وگو ←</span></a>
+            </nav>}
             {slug === "notes" && <section class="mj-directory" aria-label="فهرست یادداشت‌ها">
               <p class="mj-count">{pages.length.toLocaleString("fa-IR")} یادداشت</p>
               {pages.length ? <ul>{pages.map((file) => <li key={String(file.slug)}>
@@ -30,7 +36,7 @@ export const DefaultFrame: PageFrame = {
                 {file.description && <p>{file.description}</p>}
               </li>)}</ul> : <p>هنوز یادداشتی منتشر نشده است.</p>}
             </section>}
-          </div>
+          </main>
           <div class="page-footer">{afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer"><a href={`${root}/`}>منِ جمعی</a><span>یادداشت‌هایی برای با هم اندیشیدن</span></footer>

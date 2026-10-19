@@ -6,8 +6,8 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
   const slug = String(fileData.slug ?? "index").replace(/\/index$/, "")
   const links = [
     { label: "خانه", path: "", slug: "index" },
-    { label: "دربارهٔ من", path: "about", slug: "about" },
     { label: "فهرست", path: "notes", slug: "notes" },
+    { label: "دربارهٔ من", path: "about", slug: "about" },
     { label: "راه ارتباط", path: "contact", slug: "contact" },
   ]
   return (
@@ -15,13 +15,13 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-heading-row">
         <a class="mj-identity" href={`${root}/`} aria-label="منِ جمعی؛ خانه">
-          <span class="mj-wordmark">منِ جمعی<span aria-hidden="true">.</span></span>
+          <span class="mj-wordmark">منِ جمعی</span>
           <span class="mj-subtitle">جایی برای نوشتن و اندیشیدن</span>
         </a>
         <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
       </div>
       <nav class="mj-navigation" aria-label="منوی اصلی">
-        {links.map((link) => <a key={link.slug} href={`${root}/${link.path}`} aria-current={slug === link.slug ? "page" : undefined}>{link.label}</a>)}
+        {links.map((link) => <a key={link.slug} href={`${root}/${link.path}`} aria-current={(slug === link.slug || (link.slug === "notes" && slug.startsWith("notes/"))) ? "page" : undefined}>{link.label}</a>)}
       </nav>
       {children}
     </header>
