@@ -40,6 +40,9 @@
     for (const [obj, keys] of [[s.header,['title','subtitle']],[s.footer,['text']],[s.home,['recentTitle','topicsTitle']]]) for (const key of keys) if (typeof obj[key] !== 'string') throw Error('متن یکی از تنظیمات سایت معتبر نیست.');
     for (const flag of [s.home.recentEnabled,s.reading.enabled,s.backToTop]) if (typeof flag !== 'boolean') throw Error('وضعیت فعال یا غیرفعال یکی از امکانات معتبر نیست.');
     if (!Number.isInteger(s.reading.wordsPerMinute) || !(s.reading.wordsPerMinute >= 50 && s.reading.wordsPerMinute <= 1000)) throw Error('سرعت مطالعه باید عدد صحیح ۵۰ تا ۱۰۰۰ باشد.');
+    if (s.home.startTitle !== undefined && typeof s.home.startTitle !== 'string') throw Error('عنوان بخش برای شروع معتبر نیست.');
+    if (s.home.startEnabled !== undefined && typeof s.home.startEnabled !== 'boolean') throw Error('وضعیت بخش برای شروع معتبر نیست.');
+    if (s.home.startNotes !== undefined && (!Array.isArray(s.home.startNotes) || s.home.startNotes.some(e => !e || typeof e.title !== 'string' || typeof e.slug !== 'string' || (!e.title.trim() && !e.slug)))) throw Error('عنوان یا مقصد یکی از یادداشت‌های آغازین معتبر نیست.');
     return s;
   }
   function toBase64(bytes) {let s='';for(let i=0;i<bytes.length;i+=32768)s+=String.fromCharCode(...bytes.subarray(i,i+32768));return btoa(s);}
