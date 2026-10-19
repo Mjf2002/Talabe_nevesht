@@ -1,6 +1,6 @@
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
-import { pathToRoot } from "../../util/path"
+import { pathToRoot, slugifyFilePath, FilePath } from "../../util/path"
 import { settings, siteHref } from "../siteSettings"
 const Header = HeaderConstructor()
 
@@ -45,20 +45,28 @@ export const DefaultFrame: PageFrame = {
       return s.startsWith("notes/") && !isStartFolder(s) && !s.endsWith("/index") && !categories.some((c) => c.slug === s) && !file.frontmatter?.draft && !file.frontmatter?.unlisted && !file.frontmatter?.password
     })
     const homeSelection = settings.home as typeof settings.home & { featuredNotes?: unknown; featuredEnabled?: boolean; featuredTitle?: string; pathsEnabled?: boolean; pathsTitleEnabled?: boolean }
+    // The panel stores source paths; Quartz links use canonical output slugs.
+    const sourceNoteKey = (value: string) => value.replace(/\\/g, "/").replace(/^content\//, "").replace(/\.md$/i, "").normalize("NFC")
+    const findSelectedNote = (value: string) => {
+      const key = sourceNoteKey(value)
+      const exact = publicNotes.find((file) => String(file.slug).normalize("NFC") === key || sourceNoteKey(String(file.relativePath ?? "")) === key)
+      if (exact) return exact
+      const canonical = String(slugifyFilePath(`${key}.md` as FilePath))
+      return publicNotes.find((file) => String(file.slug) === canonical)
+    }
     const selectedNotes = (value: unknown) => {
       const slugs = Array.isArray(value) ? [...new Set(value.filter((s): s is string => typeof s === "string"))] : []
       return slugs.filter((s) => s !== normalizedSlug).flatMap((s) => {
-        const file = publicNotes.find((file) => String(file.slug) === s)
+        const file = findSelectedNote(s)
         return file ? [file] : []
       })
     }
     const startSettings = settings.home as typeof settings.home & { startTitle?: string; startEnabled?: boolean; startNotes?: { title: string; slug: string }[] }
     const startDefaults = [{ title: "چرا من جمعی؟", slug: "" }, { title: "چیستی فلسفه علوم اجتماعی", slug: "" }, { title: "عنوان سوم", slug: "" }]
     const normalizeTitle = (s: string) => s.replace(/[\s‌َُِّْ؟?]/gu, "").replace(/ي/g, "ی").replace(/ك/g, "ک")
-    const normalizeNoteSlug = (s: string) => s.split('/').map((part) => part.replace(/\s/g, '-').replace(/&/g, '-and-').replace(/%/g, '-percent').replace(/[?#<>:"|*]/g, '').toLowerCase()).join('/')
-     const startNotes = (Array.isArray(startSettings.startNotes) ? startSettings.startNotes : startDefaults).flatMap((entry) => {
+    const startNotes = (Array.isArray(startSettings.startNotes) ? startSettings.startNotes : startDefaults).flatMap((entry) => {
       if (!entry || typeof entry.title !== "string" || typeof entry.slug !== "string") return []
-      const file = entry.slug ? publicNotes.find((f) => normalizeNoteSlug(String(f.slug)) === normalizeNoteSlug(entry.slug)) : publicNotes.find((f) => normalizeTitle(String(f.frontmatter?.title ?? "")) === normalizeTitle(entry.title))
+      const file = entry.slug ? findSelectedNote(entry.slug) : publicNotes.find((f) => normalizeTitle(String(f.frontmatter?.title ?? "")) === normalizeTitle(entry.title))
       if (entry.slug && !file) return []
       return [{ title: entry.title || String(file?.frontmatter?.title ?? ""), slug: file ? String(file.slug) : "" }]
     })
