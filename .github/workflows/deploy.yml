@@ -48,7 +48,20 @@ jobs:
         run: node tools/prepare-languages.mjs
 
       - name: Build site
-        run: npx quartz build -d .i18n-build/content
+        shell: bash
+        run: |
+          set -euo pipefail
+          BUILD_DIR="$(mktemp -d quartz-i18n-XXXXXX)"
+          cp -R .i18n-build/content/. "$BUILD_DIR/"
+          test -f "$BUILD_DIR/index.md" || {
+            echo "::error::Prepared content is missing index.md"
+            exit 1
+          }
+          npx quartz build -d "$BUILD_DIR"
+          test -s public/index.html || {
+            echo "::error::Build did not generate public/index.html"
+            exit 1
+          }
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
