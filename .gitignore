@@ -12,5 +12,3 @@ replit.nix
 .quartz/
 quartz/cli/tui/dist/
 .turbo/
-.i18n-build/
-.i18n-cache/

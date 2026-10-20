@@ -1,21 +1,16 @@
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { pathToRoot } from "../util/path"
-import { siteHref } from "./siteSettings"
-import { language, languageSettings, enabledLanguages, languageLabels } from "./languages"
+import { settings, siteHref } from "./siteSettings"
 
-const Header: QuartzComponent = ({ children, fileData, tools, allFiles }: QuartzComponentProps) => {
+const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentProps) => {
   const root = pathToRoot(fileData.slug!)
-  const lang = language(String(fileData.slug))
-  const settings = languageSettings(String(fileData.slug))
-  const localRoot = root + (lang === 'fa' ? '' : '/' + lang)
   const slug = String(fileData.slug ?? "index").replace(/\/index$/, "")
-  const available = new Set(allFiles.map(f => String(f.slug).replace(/\/index$/, '')))
-  const links = settings.header.links.filter(link => lang === 'fa' || !link.href.startsWith('/') || available.has((lang + link.href).replace(/\/$/, '').replace(/\/index$/, '')))
+  const links = settings.header.links
   return (
-    <header class="mj-site-header" dir={lang === 'en' ? 'ltr' : 'rtl'}>
+    <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-heading-row">
-        <a class="mj-identity" href={`${localRoot}/`} aria-label={`${settings.header.title}؛ خانه`}>
+        <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
           <span class="mj-wordmark">{settings.header.title}</span>
           <span class="mj-subtitle">{settings.header.subtitle}</span>
         </a>
@@ -25,11 +20,8 @@ const Header: QuartzComponent = ({ children, fileData, tools, allFiles }: Quartz
         {links.map((link, index) => {
           const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
           const active = slug === target || (target === "notes" && slug.startsWith("notes/"))
-          return <a key={index} href={siteHref(link.href, localRoot)} aria-current={active ? "page" : undefined}>{link.label}</a>
+          return <a key={index} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}>{link.label}</a>
         })}
-      </nav>
-      <nav aria-label="Language" style="display:flex;gap:1rem;flex-wrap:wrap">
-        {enabledLanguages.map(l => <a href={`${root}/${l === 'fa' ? '' : l + '/'}`} lang={l} aria-current={l === lang ? 'true' : undefined}>{languageLabels[l]}</a>)}
       </nav>
       {children}
     </header>
@@ -58,9 +50,6 @@ Header.css = `
 Header.afterDOMLoaded = `
 (() => {
   const setup = () => {
-    const l = /\/(ar|en)(\/|$)/.exec(location.pathname)?.[1] || 'fa';
-    document.documentElement.lang = l;
-    document.documentElement.dir = l === 'en' ? 'ltr' : 'rtl';
     const button = document.querySelector('.mj-back-top');
     if (!button) return;
     const update = () => { button.hidden = window.scrollY < 400; };
