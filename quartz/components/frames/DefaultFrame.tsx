@@ -1,7 +1,8 @@
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
 import { pathToRoot, slugifyFilePath, FilePath } from "../../util/path"
-import { settings, siteHref } from "../siteSettings"
+import { siteHref } from "../siteSettings"
+import { languageSettings, language } from "../languages"
 const Header = HeaderConstructor()
 
 type ReadingNode = { type: string; value?: string; tagName?: string; children?: ReadingNode[] }
@@ -16,6 +17,8 @@ export const DefaultFrame: PageFrame = {
   name: "default",
   render({ componentData, header, beforeBody, pageBody: Content, afterBody, left, right, footer }: PageFrameProps) {
     const slug = String(componentData.fileData.slug ?? "index")
+    const settings = languageSettings(slug)
+    const lang = language(slug)
     const normalizedSlug = slug.replace(/\/index$/, "")
     const root = pathToRoot(componentData.fileData.slug!)
     // Reserved for introductory notes, never a topic card (including generated folder pages).
@@ -95,7 +98,7 @@ export const DefaultFrame: PageFrame = {
               {isNote && settings.reading.enabled && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
             </div>
           </div>
-          <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
+          <main id="mj-main" lang={lang} dir={lang === 'en' ? 'ltr' : 'rtl'} class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
             {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
@@ -133,7 +136,7 @@ export const DefaultFrame: PageFrame = {
           <div class="page-footer">{afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer">
-            <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
+            <a class="mj-footer-name" href={`${root}/${lang === 'fa' ? '' : lang + '/'}`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
             {settings.footer.links.length > 0 && <div class="mj-contact-links">
               {settings.footer.links.map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
             </div>}

@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "header": {
+    "title": "The Collective Self",
+    "subtitle": "",
+    "links": [
+      {
+        "label": "Home",
+        "href": "/"
+      },
+      {
+        "label": "About",
+        "href": "/about"
+      },
+      {
+        "label": "Notes",
+        "href": "/notes"
+      },
+      {
+        "label": "Contact",
+        "href": "/contact"
+      }
+    ]
+  },
+  "home": {
+    "recentEnabled": true,
+    "recentTitle": "تازه‌ترین نوشته‌ها",
+    "recentCount": 5,
+    "topicsTitle": "فهرست موضوعی",
+    "startEnabled": true,
+    "startTitle": "برای شروع",
+    "startNotes": [
+      {
+        "title": "چرا من جمعی؟",
+        "slug": "notes/start/چرا منِ جمعی؟"
+      },
+      {
+        "title": "چیستی فلسفه علوم اجتماعی",
+        "slug": ""
+      },
+      {
+        "title": "عنوان سوم",
+        "slug": ""
+      }
+    ],
+    "featuredEnabled": false,
+    "featuredTitle": "نوشته‌های منتخب",
+    "featuredNotes": [
+      "notes/howzeh/FIRSTE"
+    ],
+    "pathsEnabled": false,
+    "pathsTitleEnabled": false
+  },
+  "footer": {
+    "text": "",
+    "links": []
+  },
+  "appearance": {
+    "accent": "#187f83",
+    "cardRadius": 14,
+    "fontSize": 17
+  },
+  "reading": {
+    "enabled": true,
+    "wordsPerMinute": 200
+  },
+  "backToTop": true
+}

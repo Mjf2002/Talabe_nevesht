@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "enabled": ["fa"],
+  "automatic": false,
+  "model": "gpt-4.1-mini",
+  "maxNewFiles": 10
+}

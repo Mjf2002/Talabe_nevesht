@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "header": {
+    "title": "منِ جمعی",
+    "subtitle": "",
+    "links": [
+      {
+        "label": "الرئيسية",
+        "href": "/"
+      },
+      {
+        "label": "حول الكاتب",
+        "href": "/about"
+      },
+      {
+        "label": "المقالات",
+        "href": "/notes"
+      },
+      {
+        "label": "التواصل",
+        "href": "/contact"
+      }
+    ]
+  },
+  "home": {
+    "recentEnabled": true,
+    "recentTitle": "تازه‌ترین نوشته‌ها",
+    "recentCount": 5,
+    "topicsTitle": "فهرست موضوعی",
+    "startEnabled": true,
+    "startTitle": "برای شروع",
+    "startNotes": [
+      {
+        "title": "چرا من جمعی؟",
+        "slug": "notes/start/چرا منِ جمعی؟"
+      },
+      {
+        "title": "چیستی فلسفه علوم اجتماعی",
+        "slug": ""
+      },
+      {
+        "title": "عنوان سوم",
+        "slug": ""
+      }
+    ],
+    "featuredEnabled": false,
+    "featuredTitle": "نوشته‌های منتخب",
+    "featuredNotes": [
+      "notes/howzeh/FIRSTE"
+    ],
+    "pathsEnabled": false,
+    "pathsTitleEnabled": false
+  },
+  "footer": {
+    "text": "",
+    "links": []
+  },
+  "appearance": {
+    "accent": "#187f83",
+    "cardRadius": 14,
+    "fontSize": 17
+  },
+  "reading": {
+    "enabled": true,
+    "wordsPerMinute": 200
+  },
+  "backToTop": true
+}
