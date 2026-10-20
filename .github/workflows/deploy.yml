@@ -35,33 +35,8 @@ jobs:
       - name: Install Quartz plugins
         run: npx quartz plugin install
 
-      - name: Restore translation cache
-        uses: actions/cache@v4
-        with:
-          path: .i18n-cache
-          key: translations-v1-${{ github.run_id }}-${{ github.run_attempt }}
-          restore-keys: translations-v1-
-
-      - name: Prepare languages
-        env:
-          TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
-        run: node tools/prepare-languages.mjs
-
       - name: Build site
-        shell: bash
-        run: |
-          set -euo pipefail
-          BUILD_DIR="$(mktemp -d quartz-i18n-XXXXXX)"
-          cp -R .i18n-build/content/. "$BUILD_DIR/"
-          test -f "$BUILD_DIR/index.md" || {
-            echo "::error::Prepared content is missing index.md"
-            exit 1
-          }
-          npx quartz build -d "$BUILD_DIR"
-          test -s public/index.html || {
-            echo "::error::Build did not generate public/index.html"
-            exit 1
-          }
+        run: npx quartz build
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
