@@ -108,3 +108,10 @@ code { unicode-bidi: isolate; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
 
 @import "./home-layout.scss";
+article {
+  p, li {
+    text-align: justify;
+    text-justify: inter-word;
+    hyphens: auto;
+  }
+}
