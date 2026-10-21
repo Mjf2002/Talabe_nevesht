@@ -1,1 +1,22 @@
-{"version":1,"boxes":[],"items":[]}
+{
+  "version": 1,
+  "boxes": [
+    {
+      "id": "369f3e9f-808b-41ba-8f74-9870e788bbef",
+      "title": "کتاب ها",
+      "parent": "",
+      "topic": ""
+    }
+  ],
+  "items": [
+    {
+      "id": "f70594dd-0f7d-4516-950d-8c8258b32e55",
+      "title": "تاریخ فلسفه اسکروتن",
+      "author": "",
+      "description": "",
+      "box": "369f3e9f-808b-41ba-8f74-9870e788bbef",
+      "kind": "book",
+      "url": "/resources/files/959446d2-5573-4d25-850d-5c7531adce37.pdf"
+    }
+  ]
+}
