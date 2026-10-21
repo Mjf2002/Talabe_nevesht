@@ -91,7 +91,7 @@ export const DefaultFrame: PageFrame = {
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
               {header.map((Component) => <Component {...componentData} />)}
             </Header>
-            <div class="popover-hint">{beforeBody.map((Component) => <Component {...componentData} />)}
+            <div class="popover-hint">{!currentCategory && beforeBody.map((Component) => <Component {...componentData} />)}
               {isNote && settings.reading.enabled && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
             </div>
           </div>
