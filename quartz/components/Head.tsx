@@ -89,7 +89,11 @@ export default (() => {
           </>
         )}
 
-        <link rel="icon" href={iconPath} />
+        <link rel="icon" type="image/png" href={`${iconPath}?v=mind-network-1`} />
+        <link rel="apple-touch-icon" sizes="180x180" href={joinSegments(baseDir, "static/apple-touch-icon.png")} />
+        <link rel="manifest" href={joinSegments(baseDir, "static/site.webmanifest")} />
+        <meta name="theme-color" content="#f0eadc" />
+        <meta name="apple-mobile-web-app-title" content="منِ جمعی" />
         <meta name="description" content={description} />
         <meta name="generator" content="Quartz" />
 
