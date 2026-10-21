@@ -1,3 +1,7 @@
+import resourceData from "../../resources.json"
+type ResourceBox = { id: string; title: string; parent: string; topic: string }
+type ResourceItem = { id: string; title: string; author: string; description: string; box: string; kind: string; url: string }
+const resources = resourceData as { version: number; boxes: ResourceBox[]; items: ResourceItem[] }
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
 import { pathToRoot, slugifyFilePath, FilePath } from "../../util/path"
@@ -82,6 +86,13 @@ export const DefaultFrame: PageFrame = {
       return Number.isNaN(date) ? 0 : date
     }
     const recent = [...publicNotes].sort((a, b) => timestamp(b) - timestamp(a) || String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa")).slice(0, settings.home.recentCount)
+    const resourceBox = (id: string, seen = new Set<string>()): typeof resources.boxes => {
+      if (seen.has(id)) return []
+      seen.add(id)
+      return resources.boxes.filter((box) => box.parent === id).flatMap((box) => [box, ...resourceBox(box.id, seen)])
+    }
+    const resourceRoots = resources.boxes.filter((box) => !box.parent && (!box.topic || normalizedSlug === `notes/${box.topic}` || normalizedSlug.startsWith(`notes/${box.topic}/`)))
+    const resourceHref = (url: string) => /^https:\/\/[^\s]+$/i.test(url) ? url : /^\/resources\/files\/[a-z0-9.-]+$/i.test(url) ? `${root}${url}` : ""
     const appearance = settings.appearance
     const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:850px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
@@ -96,6 +107,23 @@ export const DefaultFrame: PageFrame = {
             </div>
           </div>
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
+            {resourceRoots.length > 0 && <section class="mj-recent-notes mj-resources" aria-label="منابع پیشنهادی">
+              <h2>منابع پیشنهادی</h2>
+              {resourceRoots.map((box) => <section class="mj-resource-box">
+                <h3>{box.title}</h3>
+                {[box, ...resourceBox(box.id)].map((group) => <div>
+                  {group.id !== box.id && <h4>{group.title}</h4>}
+                  {([ ["book", "کتاب‌ها"], ["article", "مقالات"], ["media", "چندرسانه‌ای"] ] as const).map(([kind, label]) => {
+                    const items = resources.items.filter((item) => item.box === group.id && item.kind === kind && resourceHref(item.url))
+                    return items.length > 0 && <div><h4>{label}</h4><ul>{items.map((item) => <li>
+                      <a href={resourceHref(item.url)}>{item.title}</a>
+                      {item.author && <span> — {item.author}</span>}
+                      {item.description && <p>{item.description}</p>}
+                    </li>)}</ul></div>
+                  })}
+                </div>)}
+              </section>)}
+            </section>}
             {currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
             {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
