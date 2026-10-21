@@ -3,9 +3,9 @@ import resourceData from "../../resources.json"
 const data = resourceData as { boxes: { id: string; title: string; parent: string; topic: string }[]; items: { id: string; title: string; author: string; description: string; box: string; kind: string; url: string }[] }
 
 export const libraryKinds = [
-  { id: "book", path: "books", title: "کتاب‌ها", icon: "▤", description: "کتاب‌هایی برای عمیق‌تر خواندن و دقیق‌تر اندیشیدن." },
-  { id: "article", path: "articles", title: "مقالات", icon: "◷", description: "مقاله‌ها و پژوهش‌هایی برای دنبال‌کردن پرسش‌ها." },
-  { id: "media", path: "media", title: "چندرسانه‌ای", icon: "▷", description: "دیدن، شنیدن و آموختن از زاویه‌ای دیگر." },
+  { id: "book", path: "books", title: "کتاب‌ها", icon: "📚", description: "کتاب‌هایی برای عمیق‌تر خواندن و دقیق‌تر اندیشیدن." },
+  { id: "article", path: "articles", title: "مقالات", icon: "📄", description: "مقاله‌ها و پژوهش‌هایی برای دنبال‌کردن پرسش‌ها." },
+  { id: "media", path: "media", title: "چندرسانه‌ای", icon: "🎬", description: "دیدن، شنیدن و آموختن از زاویه‌ای دیگر." },
 ]
 const css = `
 .mj-library-menu{position:fixed;right:16px;left:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:80;direction:rtl;font-size:14px}
@@ -15,6 +15,7 @@ const css = `
 .mj-library-menu nav{position:absolute;bottom:100%;right:0;left:auto;padding-bottom:10px;width:220px;max-width:calc(100vw - 32px)}
 .mj-library-menu nav>div{padding:8px;border:1px solid var(--lightgray);border-radius:18px;background:var(--light);box-shadow:0 10px 35px #0003}
 .mj-library-menu nav a{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;text-decoration:none;color:var(--dark)}
+.mj-library-menu nav a>span{font-size:24px;line-height:1.2;flex:0 0 32px;text-align:center}
 .mj-library-menu nav a:hover{background:var(--highlight);color:var(--secondary)}
 .mj-library{direction:rtl;text-align:right;padding:12px 0 48px;color:var(--dark)}
 .mj-library-hero{position:relative;overflow:hidden;padding:35px 28px;border:1px solid var(--lightgray);border-radius:24px;background:linear-gradient(135deg,var(--highlight),var(--light));margin-bottom:24px}
@@ -65,7 +66,7 @@ export function LibraryPage({ root, path }: { root: string; path: string }) {
   const groups = [...new Set(items.map(i => i.box))]
   return <section class="mj-library" aria-label={kind.title}>
     <header class="mj-library-hero"><a class="mj-library-kicker" href={`${root}/`}>منِ جمعی / منابع پیشنهادی</a><h1>{kind.title}</h1><p>{kind.description}</p><p>{items.length.toLocaleString("fa-IR")} منبع برای مطالعه و تأمل</p></header>
-    <nav class="mj-library-tabs" aria-label="نوع منابع">{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`} aria-current={k.id === kind.id ? "page" : undefined}>{k.title}</a>)}</nav>
+    <nav class="mj-library-tabs" aria-label="نوع منابع">{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`} aria-current={k.id === kind.id ? "page" : undefined}><span aria-hidden="true">{k.icon}</span> {k.title}</a>)}</nav>
     {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article id={`resource-${encodeURIComponent(item.id)}`} style="scroll-margin-top:100px" class="mj-library-card"><span class="mj-library-author">{item.author || "منبع پیشنهادی"}</span><h3>{item.title}</h3>{item.description && <p>{item.description}</p>}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهده ↗</a>}<a class="mj-library-action" href={downloadSettings.endpoint ? `${downloadSettings.endpoint}?file=${encodeURIComponent(item.url.split('/').pop()!)}` : href(item.url)} data-mj-download={downloadSettings.endpoint ? undefined : "true"} download>دانلود ↓</a></> : <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهدهٔ منبع ↗</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
   </section>
 }
