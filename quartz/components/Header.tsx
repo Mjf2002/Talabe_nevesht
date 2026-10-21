@@ -66,3 +66,37 @@ Header.afterDOMLoaded = `
 })();
 `
 export default (() => Header) satisfies QuartzComponentConstructor
+
+// Resource menu: initialize on initial load and Quartz SPA navigation.
+Header.afterDOMLoaded += `
+(() => {
+  let cleanup = () => {};
+  function setupLibraryMenu() {
+    cleanup();
+    const menu = document.querySelector('.mj-library-menu');
+    if (!menu) return;
+    let timer;
+    const close = () => { menu.open = false; clearTimeout(timer); };
+    const leave = (e) => { if (e.pointerType === 'mouse') timer = setTimeout(close, 180); };
+    const enter = () => clearTimeout(timer);
+    const outside = (e) => { if (!menu.contains(e.target)) close(); };
+    const escape = (e) => { if (e.key === 'Escape' && menu.open) { close(); menu.querySelector('summary').focus(); } };
+    const choose = (e) => { if (e.target.closest('a')) close(); };
+    menu.addEventListener('pointerleave', leave);
+    menu.addEventListener('pointerenter', enter);
+    menu.addEventListener('click', choose);
+    document.addEventListener('pointerdown', outside);
+    document.addEventListener('keydown', escape);
+    cleanup = () => {
+      clearTimeout(timer);
+      menu.removeEventListener('pointerleave', leave);
+      menu.removeEventListener('pointerenter', enter);
+      menu.removeEventListener('click', choose);
+      document.removeEventListener('pointerdown', outside);
+      document.removeEventListener('keydown', escape);
+    };
+  }
+  document.addEventListener('nav', setupLibraryMenu);
+  setupLibraryMenu();
+})();
+`

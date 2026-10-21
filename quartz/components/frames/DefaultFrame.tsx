@@ -1,7 +1,4 @@
-import resourceData from "../../resources.json"
-type ResourceBox = { id: string; title: string; parent: string; topic: string }
-type ResourceItem = { id: string; title: string; author: string; description: string; box: string; kind: string; url: string }
-const resources = resourceData as { version: number; boxes: ResourceBox[]; items: ResourceItem[] }
+import { LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
 import { pathToRoot, slugifyFilePath, FilePath } from "../../util/path"
@@ -86,13 +83,7 @@ export const DefaultFrame: PageFrame = {
       return Number.isNaN(date) ? 0 : date
     }
     const recent = [...publicNotes].sort((a, b) => timestamp(b) - timestamp(a) || String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa")).slice(0, settings.home.recentCount)
-    const resourceBox = (id: string, seen = new Set<string>()): typeof resources.boxes => {
-      if (seen.has(id)) return []
-      seen.add(id)
-      return resources.boxes.filter((box) => box.parent === id).flatMap((box) => [box, ...resourceBox(box.id, seen)])
-    }
-    const resourceRoots = resources.boxes.filter((box) => !box.parent && (!box.topic || normalizedSlug === `notes/${box.topic}` || normalizedSlug.startsWith(`notes/${box.topic}/`)))
-    const resourceHref = (url: string) => /^https:\/\/[^\s]+$/i.test(url) ? url : /^\/resources\/files\/[a-z0-9.-]+$/i.test(url) ? `${root}${url}` : ""
+    const isLibrary = libraryKinds.some(k => normalizedSlug === `resources/${k.path}`)
     const appearance = settings.appearance
     const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:850px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
@@ -102,52 +93,14 @@ export const DefaultFrame: PageFrame = {
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
               {header.map((Component) => <Component {...componentData} />)}
             </Header>
-            <div class="popover-hint">{!currentCategory && beforeBody.map((Component) => <Component {...componentData} />)}
+            <div class="popover-hint">{!currentCategory && !isLibrary && beforeBody.map((Component) => <Component {...componentData} />)}
               {isNote && settings.reading.enabled && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
             </div>
           </div>
-          {resourceRoots.length > 0 && <aside class="mj-resource-tool" aria-label="منابع پیشنهادی">
-            <input class="mj-resource-toggle" id="mj-resource-toggle" type="checkbox" aria-label="باز و بسته کردن منابع پیشنهادی" />
-            <label class="mj-resource-trigger" for="mj-resource-toggle">منابع پیشنهادی</label>
-            <section class="mj-resource-panel" aria-label="فهرست منابع پیشنهادی">
-              <h2>منابع پیشنهادی</h2>
-              {resourceRoots.map((box) => <section class="mj-resource-box">
-                <h3>{box.title}</h3>
-                {[box, ...resourceBox(box.id)].map((group) => <div>
-                  {group.id !== box.id && <h4>{group.title}</h4>}
-                  {([ ["book", "کتاب‌ها"], ["article", "مقالات"], ["media", "چندرسانه‌ای"] ] as const).map(([kind, label]) => {
-                    const items = resources.items.filter((item) => item.box === group.id && item.kind === kind && resourceHref(item.url))
-                    return items.length > 0 && <div>{new Set(resources.items.filter((item) => item.box === group.id && resourceHref(item.url)).map((item) => item.kind)).size > 1 && <h4>{label}</h4>}<ul>{items.map((item) => <li>
-                      <a href={resourceHref(item.url)}>{item.title}</a>
-                      {item.author && <span> — {item.author}</span>}
-                      {item.description && <p>{item.description}</p>}
-                    </li>)}</ul></div>
-                  })}
-                </div>)}
-              </section>)}
-            </section>
-          </aside>}
-          <style>{`
-            .mj-resource-tool{direction:rtl;text-align:right;position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom, 0px));z-index:80;font-size:13px;line-height:1.6}
-            .mj-resource-toggle{position:absolute;inline-size:1px;block-size:1px;opacity:0}
-            .mj-resource-trigger{display:block;cursor:pointer;border:1px solid var(--lightgray);border-radius:22px;padding:10px 12px;min-height:44px;box-sizing:border-box;background:var(--light);color:var(--dark);box-shadow:0 4px 20px #0002}
-            .mj-resource-toggle:focus-visible + .mj-resource-trigger{outline:2px solid var(--secondary);outline-offset:4px}
-            .mj-resource-panel{display:none;position:absolute;bottom:56px;left:0;width:min(320px,calc(100vw - 24px));max-height:min(65dvh,480px);overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:18px;background:var(--light);color:var(--dark);border:1px solid var(--lightgray);border-radius:14px;box-shadow:0 8px 32px #0003}
-            .mj-resource-toggle:checked ~ .mj-resource-panel{display:block}
-            .mj-resource-panel h2{font-size:1.1rem;margin:0 0 16px}
-            .mj-resource-panel h3,.mj-resource-panel h4{font-size:1rem;margin:14px 0 8px}
-            .mj-resource-panel ul{padding-inline-start:20px;margin:6px 0}
-            .mj-resource-panel p{font-size:.9em;margin:4px 0 12px}
-            .mj-resource-panel a{overflow-wrap:anywhere}
-            @media(min-width:1480px){
-              .mj-resource-tool{top:205px;left:20px;bottom:auto;width:250px}
-              .mj-resource-trigger,.mj-resource-toggle{display:none}
-              .mj-resource-panel{display:block;position:static;width:250px;max-height:calc(100dvh - 230px);box-shadow:none}
-            }
-            @media print{.mj-resource-tool{display:none}}
-          `}</style>
+          <LibraryStyles />
+          <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
-            {currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
+            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
             {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
               <ol>{startNotes.map((entry, index) => <li key={index}>{entry.slug ? <a class="internal" href={`${root}/${entry.slug}`}>{entry.title}</a> : <span>{entry.title}</span>}</li>)}</ol>
@@ -181,7 +134,7 @@ export const DefaultFrame: PageFrame = {
               <ul>{recommended.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
             </section>}
           </main>
-          <div class="page-footer">{afterBody.map((Component) => <Component {...componentData} />)}</div>
+          <div class="page-footer">{!isLibrary && afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer">
             <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
