@@ -1,3 +1,4 @@
+import downloadSettings from "../../download-settings.json"
 import resourceData from "../../resources.json"
 const data = resourceData as { boxes: { id: string; title: string; parent: string; topic: string }[]; items: { id: string; title: string; author: string; description: string; box: string; kind: string; url: string }[] }
 
@@ -37,6 +38,15 @@ const css = `
 @media(max-width:600px){.mj-library-grid{grid-template-columns:1fr}.mj-library-hero{padding:26px 20px}.mj-library .mj-library-hero h1{font-size:2rem}.mj-library-card{padding:20px}}
 @media print{.mj-library-menu{display:none}}
 `
+export function NoteResources({ root, references }: { root: string; references: unknown }) {
+  if (!Array.isArray(references) || !references.length) return null
+  return <section class="mj-note-resources" dir="rtl"><h2>منابع این یادداشت</h2><ol>{references.map(ref => {
+    if (!ref || typeof ref !== "object" || typeof ref.id !== "string") return null
+    const item = data.items.find(i => i.id === ref.id)
+    const kind = item && libraryKinds.find(k => k.id === item.kind)
+    return <li>{item && kind ? <a href={`${root}/resources/${kind.path}#resource-${encodeURIComponent(item.id)}`}>{item.title}{item.author ? ` — ${item.author}` : ""}</a> : <span>منبع در دسترس نیست</span>}{typeof ref.pages === "string" && ref.pages && <span>، ص. {ref.pages}</span>}{typeof ref.note === "string" && ref.note && <p>{ref.note}</p>}</li>
+  })}</ol></section>
+}
 export function LibraryStyles() { return <style>{css}</style> }
 export function LibraryMenu({ root }: { root: string }) {
   return <details class="mj-library-menu"><summary>منابع پیشنهادی <span aria-hidden="true">⌃</span></summary><nav aria-label="منابع پیشنهادی"><div>{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`}><span aria-hidden="true">{k.icon}</span>{k.title}</a>)}</div></nav></details>
@@ -56,6 +66,6 @@ export function LibraryPage({ root, path }: { root: string; path: string }) {
   return <section class="mj-library" aria-label={kind.title}>
     <header class="mj-library-hero"><a class="mj-library-kicker" href={`${root}/`}>منِ جمعی / منابع پیشنهادی</a><h1>{kind.title}</h1><p>{kind.description}</p><p>{items.length.toLocaleString("fa-IR")} منبع برای مطالعه و تأمل</p></header>
     <nav class="mj-library-tabs" aria-label="نوع منابع">{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`} aria-current={k.id === kind.id ? "page" : undefined}>{k.title}</a>)}</nav>
-    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article class="mj-library-card"><span class="mj-library-author">{item.author || "منبع پیشنهادی"}</span><h3>{item.title}</h3>{item.description && <p>{item.description}</p>}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهده ↗</a>}<a class="mj-library-action" href={href(item.url)} download>دانلود ↓</a></> : <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهدهٔ منبع ↗</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
+    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article id={`resource-${encodeURIComponent(item.id)}`} style="scroll-margin-top:100px" class="mj-library-card"><span class="mj-library-author">{item.author || "منبع پیشنهادی"}</span><h3>{item.title}</h3>{item.description && <p>{item.description}</p>}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهده ↗</a>}<a class="mj-library-action" href={downloadSettings.endpoint ? `${downloadSettings.endpoint}?file=${encodeURIComponent(item.url.split('/').pop()!)}` : href(item.url)} data-mj-download={downloadSettings.endpoint ? undefined : "true"} download>دانلود ↓</a></> : <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهدهٔ منبع ↗</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
   </section>
 }

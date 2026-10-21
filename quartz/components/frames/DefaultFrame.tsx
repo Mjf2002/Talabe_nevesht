@@ -1,4 +1,4 @@
-import { LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
+import { NoteResources, LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
 import { pathToRoot, slugifyFilePath, FilePath } from "../../util/path"
@@ -101,7 +101,8 @@ export const DefaultFrame: PageFrame = {
           <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
-            {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
+            {isNote && <NoteResources root={root} references={componentData.fileData.frontmatter?.resourceReferences} />}
+             {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
               <ol>{startNotes.map((entry, index) => <li key={index}>{entry.slug ? <a class="internal" href={`${root}/${entry.slug}`}>{entry.title}</a> : <span>{entry.title}</span>}</li>)}</ol>
             </section>}

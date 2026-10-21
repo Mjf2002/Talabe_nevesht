@@ -67,6 +67,27 @@ Header.afterDOMLoaded = `
 `
 export default (() => Header) satisfies QuartzComponentConstructor
 
+// Fetch local files as blobs so Android does not navigate to the original PDF URL.
+Header.afterDOMLoaded += `
+(() => {
+ if(window.__mjDownloadHandler)return;
+ window.__mjDownloadHandler=true;
+ document.addEventListener('click',async event=>{
+  const link=event.target instanceof Element?event.target.closest('a[data-mj-download]'):null;
+  if(!link)return;
+  event.preventDefault();event.stopPropagation();
+  if(link.dataset.busy)return;
+  link.dataset.busy='true';const label=link.textContent;link.textContent='در حال دریافت…';
+  try{
+   const url=new URL(link.href);if(url.origin!==location.origin)throw Error('origin');
+   const response=await fetch(url.href);if(!response.ok)throw Error('HTTP '+response.status);
+   const blob=await response.blob();const objectURL=URL.createObjectURL(blob);
+   const a=document.createElement('a');a.href=objectURL;a.download=decodeURIComponent(url.pathname.split('/').pop());document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(objectURL),60000);
+  }catch(error){alert('دریافت فایل انجام نشد. دوباره تلاش کنید یا از گزینهٔ مشاهده استفاده کنید.');}
+  finally{delete link.dataset.busy;link.textContent=label;}
+ },true);
+})();
+`
 // Resource menu: delegated handlers work across initial load and SPA navigation.
 Header.afterDOMLoaded += `
 (() => {
