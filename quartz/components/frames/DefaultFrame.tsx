@@ -117,7 +117,7 @@ export const DefaultFrame: PageFrame = {
                   {group.id !== box.id && <h4>{group.title}</h4>}
                   {([ ["book", "کتاب‌ها"], ["article", "مقالات"], ["media", "چندرسانه‌ای"] ] as const).map(([kind, label]) => {
                     const items = resources.items.filter((item) => item.box === group.id && item.kind === kind && resourceHref(item.url))
-                    return items.length > 0 && <div><h4>{label}</h4><ul>{items.map((item) => <li>
+                    return items.length > 0 && <div>{new Set(resources.items.filter((item) => item.box === group.id && resourceHref(item.url)).map((item) => item.kind)).size > 1 && <h4>{label}</h4>}<ul>{items.map((item) => <li>
                       <a href={resourceHref(item.url)}>{item.title}</a>
                       {item.author && <span> — {item.author}</span>}
                       {item.description && <p>{item.description}</p>}
@@ -128,11 +128,11 @@ export const DefaultFrame: PageFrame = {
             </section>
           </aside>}
           <style>{`
-            .mj-resource-tool{direction:rtl;text-align:right;position:fixed;left:20px;bottom:95px;z-index:80;font-size:15px;line-height:1.9}
+            .mj-resource-tool{direction:rtl;text-align:right;position:fixed;left:12px;bottom:calc(12px + env(safe-area-inset-bottom, 0px));z-index:80;font-size:13px;line-height:1.6}
             .mj-resource-toggle{position:absolute;inline-size:1px;block-size:1px;opacity:0}
-            .mj-resource-trigger{display:block;cursor:pointer;border:1px solid var(--lightgray);border-radius:12px;padding:8px 14px;background:var(--light);color:var(--dark);box-shadow:0 4px 20px #0002}
+            .mj-resource-trigger{display:block;cursor:pointer;border:1px solid var(--lightgray);border-radius:22px;padding:10px 12px;min-height:44px;box-sizing:border-box;background:var(--light);color:var(--dark);box-shadow:0 4px 20px #0002}
             .mj-resource-toggle:focus-visible + .mj-resource-trigger{outline:2px solid var(--secondary);outline-offset:4px}
-            .mj-resource-panel{display:none;position:absolute;bottom:55px;left:0;width:min(320px,calc(100vw - 40px));max-height:65vh;overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:18px;background:var(--light);color:var(--dark);border:1px solid var(--lightgray);border-radius:14px;box-shadow:0 8px 32px #0003}
+            .mj-resource-panel{display:none;position:absolute;bottom:56px;left:0;width:min(320px,calc(100vw - 24px));max-height:min(65dvh,480px);overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:18px;background:var(--light);color:var(--dark);border:1px solid var(--lightgray);border-radius:14px;box-shadow:0 8px 32px #0003}
             .mj-resource-toggle:checked ~ .mj-resource-panel{display:block}
             .mj-resource-panel h2{font-size:1.1rem;margin:0 0 16px}
             .mj-resource-panel h3,.mj-resource-panel h4{font-size:1rem;margin:14px 0 8px}
@@ -140,7 +140,7 @@ export const DefaultFrame: PageFrame = {
             .mj-resource-panel p{font-size:.9em;margin:4px 0 12px}
             .mj-resource-panel a{overflow-wrap:anywhere}
             @media(min-width:1480px){
-              .mj-resource-tool{top:205px;bottom:auto;width:250px}
+              .mj-resource-tool{top:205px;left:20px;bottom:auto;width:250px}
               .mj-resource-trigger,.mj-resource-toggle{display:none}
               .mj-resource-panel{display:block;position:static;width:250px;max-height:calc(100dvh - 230px);box-shadow:none}
             }
