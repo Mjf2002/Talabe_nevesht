@@ -7,11 +7,11 @@ export const libraryKinds = [
   { id: "media", path: "media", title: "چندرسانه‌ای", icon: "▷", description: "دیدن، شنیدن و آموختن از زاویه‌ای دیگر." },
 ]
 const css = `
-.mj-library-menu{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:80;direction:rtl;font-size:14px}
+.mj-library-menu{position:fixed;right:16px;left:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:80;direction:rtl;font-size:14px}
 .mj-library-menu summary{cursor:pointer;list-style:none;border:1px solid var(--lightgray);border-radius:24px;background:var(--light);color:var(--dark);padding:11px 17px;min-height:44px;box-sizing:border-box;box-shadow:0 5px 22px #0002}
 .mj-library-menu summary::-webkit-details-marker{display:none}
 .mj-library-menu summary:focus-visible,.mj-library a:focus-visible{outline:2px solid var(--secondary);outline-offset:4px}
-.mj-library-menu nav{position:absolute;bottom:100%;left:0;padding-bottom:10px;width:220px;max-width:calc(100vw - 32px)}
+.mj-library-menu nav{position:absolute;bottom:100%;right:0;left:auto;padding-bottom:10px;width:220px;max-width:calc(100vw - 32px)}
 .mj-library-menu nav>div{padding:8px;border:1px solid var(--lightgray);border-radius:18px;background:var(--light);box-shadow:0 10px 35px #0003}
 .mj-library-menu nav a{display:flex;gap:12px;align-items:center;padding:12px;border-radius:10px;text-decoration:none;color:var(--dark)}
 .mj-library-menu nav a:hover{background:var(--highlight);color:var(--secondary)}

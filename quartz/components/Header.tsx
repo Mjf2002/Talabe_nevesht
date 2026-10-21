@@ -67,36 +67,36 @@ Header.afterDOMLoaded = `
 `
 export default (() => Header) satisfies QuartzComponentConstructor
 
-// Resource menu: initialize on initial load and Quartz SPA navigation.
+// Resource menu: delegated handlers work across initial load and SPA navigation.
 Header.afterDOMLoaded += `
 (() => {
-  let cleanup = () => {};
-  function setupLibraryMenu() {
-    cleanup();
-    const menu = document.querySelector('.mj-library-menu');
-    if (!menu) return;
-    let timer;
-    const close = () => { menu.open = false; clearTimeout(timer); };
-    const leave = (e) => { if (e.pointerType === 'mouse') timer = setTimeout(close, 180); };
-    const enter = () => clearTimeout(timer);
-    const outside = (e) => { if (!menu.contains(e.target)) close(); };
-    const escape = (e) => { if (e.key === 'Escape' && menu.open) { close(); menu.querySelector('summary').focus(); } };
-    const choose = (e) => { if (e.target.closest('a')) close(); };
-    menu.addEventListener('pointerleave', leave);
-    menu.addEventListener('pointerenter', enter);
-    menu.addEventListener('click', choose);
-    document.addEventListener('pointerdown', outside);
-    document.addEventListener('keydown', escape);
-    cleanup = () => {
-      clearTimeout(timer);
-      menu.removeEventListener('pointerleave', leave);
-      menu.removeEventListener('pointerenter', enter);
-      menu.removeEventListener('click', choose);
-      document.removeEventListener('pointerdown', outside);
-      document.removeEventListener('keydown', escape);
-    };
-  }
-  document.addEventListener('nav', setupLibraryMenu);
-  setupLibraryMenu();
+  if (window.__mjLibraryMenuEvents) return;
+  window.__mjLibraryMenuEvents = true;
+  let timer;
+  const menu = () => document.querySelector('.mj-library-menu');
+  const cancel = () => { clearTimeout(timer); timer = undefined; };
+  const close = () => { cancel(); const node = menu(); if (node) node.open = false; };
+  const schedule = () => { if (!timer) timer = setTimeout(close, 180); };
+  document.addEventListener('mousemove', (event) => {
+    const node = menu();
+    if (!node || !node.open) { cancel(); return; }
+    if (node.contains(event.target)) cancel(); else schedule();
+  }, { passive: true });
+  document.addEventListener('mouseout', (event) => {
+    if (!event.relatedTarget && menu()?.open) schedule();
+  });
+  document.addEventListener('pointerdown', (event) => {
+    const node = menu();
+    if (node && !node.contains(event.target)) close();
+  });
+  document.addEventListener('click', (event) => {
+    const node = menu();
+    if (node && event.target instanceof Element && node.contains(event.target) && event.target.closest('a')) close();
+  });
+  document.addEventListener('keydown', (event) => {
+    const node = menu();
+    if (event.key === 'Escape' && node?.open) { close(); node.querySelector('summary')?.focus(); }
+  });
+  document.addEventListener('nav', close);
 })();
 `
