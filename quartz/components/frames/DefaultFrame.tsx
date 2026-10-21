@@ -106,8 +106,10 @@ export const DefaultFrame: PageFrame = {
               {isNote && settings.reading.enabled && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
             </div>
           </div>
-          <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
-            {resourceRoots.length > 0 && <section class="mj-recent-notes mj-resources" aria-label="منابع پیشنهادی">
+          {resourceRoots.length > 0 && <aside class="mj-resource-tool" aria-label="منابع پیشنهادی">
+            <input class="mj-resource-toggle" id="mj-resource-toggle" type="checkbox" aria-label="باز و بسته کردن منابع پیشنهادی" />
+            <label class="mj-resource-trigger" for="mj-resource-toggle">منابع پیشنهادی</label>
+            <section class="mj-resource-panel" aria-label="فهرست منابع پیشنهادی">
               <h2>منابع پیشنهادی</h2>
               {resourceRoots.map((box) => <section class="mj-resource-box">
                 <h3>{box.title}</h3>
@@ -123,7 +125,28 @@ export const DefaultFrame: PageFrame = {
                   })}
                 </div>)}
               </section>)}
-            </section>}
+            </section>
+          </aside>}
+          <style>{`
+            .mj-resource-tool{direction:rtl;text-align:right;position:fixed;left:20px;bottom:95px;z-index:80;font-size:15px;line-height:1.9}
+            .mj-resource-toggle{position:absolute;inline-size:1px;block-size:1px;opacity:0}
+            .mj-resource-trigger{display:block;cursor:pointer;border:1px solid var(--lightgray);border-radius:12px;padding:8px 14px;background:var(--light);color:var(--dark);box-shadow:0 4px 20px #0002}
+            .mj-resource-toggle:focus-visible + .mj-resource-trigger{outline:2px solid var(--secondary);outline-offset:4px}
+            .mj-resource-panel{display:none;position:absolute;bottom:55px;left:0;width:min(320px,calc(100vw - 40px));max-height:65vh;overflow-y:auto;overscroll-behavior:contain;box-sizing:border-box;padding:18px;background:var(--light);color:var(--dark);border:1px solid var(--lightgray);border-radius:14px;box-shadow:0 8px 32px #0003}
+            .mj-resource-toggle:checked ~ .mj-resource-panel{display:block}
+            .mj-resource-panel h2{font-size:1.1rem;margin:0 0 16px}
+            .mj-resource-panel h3,.mj-resource-panel h4{font-size:1rem;margin:14px 0 8px}
+            .mj-resource-panel ul{padding-inline-start:20px;margin:6px 0}
+            .mj-resource-panel p{font-size:.9em;margin:4px 0 12px}
+            .mj-resource-panel a{overflow-wrap:anywhere}
+            @media(min-width:1480px){
+              .mj-resource-tool{top:205px;bottom:auto;width:250px}
+              .mj-resource-trigger,.mj-resource-toggle{display:none}
+              .mj-resource-panel{display:block;position:static;width:250px;max-height:calc(100dvh - 230px);box-shadow:none}
+            }
+            @media print{.mj-resource-tool{display:none}}
+          `}</style>
+          <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
             {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
