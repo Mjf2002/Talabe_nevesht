@@ -31,7 +31,8 @@ const css = `
 .mj-library .mj-library-card h3{font-size:1.2rem;margin:12px 0;line-height:1.7;overflow-wrap:anywhere}
 .mj-library-card p{font-size:.95rem;color:var(--gray);white-space:pre-line;overflow-wrap:anywhere}
 .mj-library-author{font-size:.85rem;color:var(--secondary)}
-.mj-library-card .mj-library-action{align-self:flex-start;margin-top:auto;padding:8px 16px;border:1px solid var(--lightgray);border-radius:10px;text-decoration:none;font-size:.9rem}
+.mj-library-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:16px}
+.mj-library-card .mj-library-action{align-self:flex-start;margin-top:0;padding:8px 16px;border:1px solid var(--lightgray);border-radius:10px;text-decoration:none;font-size:.9rem}
 .mj-library-empty{border:1px dashed var(--lightgray);border-radius:18px;padding:30px;text-align:center;color:var(--gray)}
 @media(max-width:600px){.mj-library-grid{grid-template-columns:1fr}.mj-library-hero{padding:26px 20px}.mj-library .mj-library-hero h1{font-size:2rem}.mj-library-card{padding:20px}}
 @media print{.mj-library-menu{display:none}}
@@ -55,6 +56,6 @@ export function LibraryPage({ root, path }: { root: string; path: string }) {
   return <section class="mj-library" aria-label={kind.title}>
     <header class="mj-library-hero"><a class="mj-library-kicker" href={`${root}/`}>منِ جمعی / منابع پیشنهادی</a><h1>{kind.title}</h1><p>{kind.description}</p><p>{items.length.toLocaleString("fa-IR")} منبع برای مطالعه و تأمل</p></header>
     <nav class="mj-library-tabs" aria-label="نوع منابع">{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`} aria-current={k.id === kind.id ? "page" : undefined}>{k.title}</a>)}</nav>
-    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article class="mj-library-card"><span class="mj-library-author">{item.author || "منبع پیشنهادی"}</span><h3>{item.title}</h3>{item.description && <p>{item.description}</p>}<a class="mj-library-action" href={href(item.url)}>{item.url.startsWith("/resources/files/") ? "دریافت فایل ↓" : "مشاهدهٔ منبع ←"}</a></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
+    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article class="mj-library-card"><span class="mj-library-author">{item.author || "منبع پیشنهادی"}</span><h3>{item.title}</h3>{item.description && <p>{item.description}</p>}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهده ↗</a>}<a class="mj-library-action" href={href(item.url)} download>دانلود ↓</a></> : <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهدهٔ منبع ↗</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
   </section>
 }
