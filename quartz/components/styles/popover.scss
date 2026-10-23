@@ -72,18 +72,14 @@
 
   visibility: hidden;
   opacity: 0;
-  transition:
-    opacity 0.3s ease,
-    visibility 0.3s ease;
+  transition: none;
 
   @media all and ($mobile) {
     display: none !important;
   }
 }
 
-.active-popover,
-.popover:hover {
-  animation: dropin 0.3s ease;
-  animation-fill-mode: forwards;
-  animation-delay: 0.2s;
+.active-popover {
+  visibility: visible;
+  opacity: 1;
 }
