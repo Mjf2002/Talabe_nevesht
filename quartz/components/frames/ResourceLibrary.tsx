@@ -8,6 +8,11 @@ export const libraryKinds = [
   { id: "media", path: "media", title: "چندرسانه‌ای", icon: "🎬", description: "دیدن، شنیدن و آموختن از زاویه‌ای دیگر." },
 ]
 const css = `
+.mj-note-resources{direction:rtl;text-align:right;margin-block:28px;padding:22px;border:1px solid var(--lightgray);border-inline-start:4px solid var(--secondary);border-radius:16px;background:var(--light);overflow-wrap:anywhere}
+.mj-note-resources h2{font-size:1.15rem;margin:0 0 16px}.mj-note-resources ol{padding-inline-start:24px;margin:0}.mj-note-resources li{padding:8px 4px;line-height:1.9}.mj-note-resources li+li{border-top:1px solid var(--lightgray)}.mj-note-resources li p{margin:4px 0;font-size:.9rem;color:var(--gray);white-space:pre-line}
+.mj-note-resources--further-reading{background:var(--highlight);border-radius:22px}.mj-note-resources--further-reading ol{list-style-type:disc}.mj-note-resources--citations{border-inline-start-width:1px;border-top:3px solid var(--secondary);border-radius:4px}.mj-note-resources--citations ol{list-style-type:decimal}
+@media(max-width:600px){.mj-note-resources{padding:16px}}
+
 .mj-library-menu{position:fixed;right:16px;left:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:80;direction:rtl;font-size:14px}
 .mj-library-menu summary{cursor:pointer;list-style:none;border:1px solid var(--lightgray);border-radius:24px;background:var(--light);color:var(--dark);padding:11px 17px;min-height:44px;box-sizing:border-box;box-shadow:0 5px 22px #0002}
 .mj-library-menu summary::-webkit-details-marker{display:none}
@@ -47,7 +52,7 @@ export function NoteResources({ root, references }: { root: string; references: 
   return <>{sections.map(section => {
     const entries = valid.filter(ref => group(ref) === section.id)
     if (!entries.length) return null
-    return <section class="mj-note-resources" dir="rtl"><h2>{section.title}</h2><ol>{entries.map(ref => {
+    return <section class={`mj-note-resources mj-note-resources--${section.id}`} dir="rtl"><h2>{section.title}</h2><ol>{entries.map(ref => {
     if (!ref || typeof ref !== "object" || typeof ref.id !== "string") return null
     const item = data.items.find(i => i.id === ref.id)
     const kind = item && libraryKinds.find(k => k.id === item.kind)
