@@ -4,11 +4,23 @@ import { fetchCanonical } from "./util"
 
 const p = new DOMParser()
 let activeAnchor: HTMLAnchorElement | null = null
+let closeTimer: ReturnType<typeof setTimeout> | undefined
+
+function cancelPopoverClose() {
+  clearTimeout(closeTimer)
+  closeTimer = undefined
+}
+
+function schedulePopoverClose() {
+  cancelPopoverClose()
+  closeTimer = setTimeout(clearActivePopover, 450)
+}
 
 async function mouseEnterHandler(
   this: HTMLAnchorElement,
   { clientX, clientY }: { clientX: number; clientY: number },
 ) {
+  cancelPopoverClose()
   const link = (activeAnchor = this)
   if (link.dataset.noPopover === "true") {
     return
@@ -26,6 +38,7 @@ async function mouseEnterHandler(
 
   function showPopover(popoverElement: HTMLElement) {
     clearActivePopover()
+    activeAnchor = link
     popoverElement.classList.add("active-popover")
     setPosition(popoverElement as HTMLElement)
 
@@ -68,6 +81,8 @@ async function mouseEnterHandler(
   const popoverElement = document.createElement("div")
   popoverElement.id = popoverId
   popoverElement.classList.add("popover")
+  popoverElement.addEventListener("mouseenter", cancelPopoverClose)
+  popoverElement.addEventListener("mouseleave", schedulePopoverClose)
   const popoverInner = document.createElement("div")
   popoverInner.classList.add("popover-inner")
   popoverInner.dataset.contentType = contentType ?? undefined
@@ -120,6 +135,7 @@ async function mouseEnterHandler(
 }
 
 function clearActivePopover() {
+  cancelPopoverClose()
   activeAnchor = null
   const allPopoverElements = document.querySelectorAll(".popover")
   allPopoverElements.forEach((popoverElement) => popoverElement.classList.remove("active-popover"))
@@ -129,10 +145,11 @@ function setupPopovers() {
   const links = [...document.querySelectorAll("a.internal")] as HTMLAnchorElement[]
   for (const link of links) {
     link.addEventListener("mouseenter", mouseEnterHandler)
-    link.addEventListener("mouseleave", clearActivePopover)
+    link.addEventListener("mouseleave", schedulePopoverClose)
     window.addCleanup(() => {
       link.removeEventListener("mouseenter", mouseEnterHandler)
-      link.removeEventListener("mouseleave", clearActivePopover)
+      link.removeEventListener("mouseleave", schedulePopoverClose)
+      cancelPopoverClose()
     })
   }
 }
