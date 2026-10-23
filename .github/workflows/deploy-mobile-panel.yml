@@ -1,0 +1,43 @@
+name: Deploy mobile panel
+
+on:
+  push:
+    branches: [v5]
+    paths:
+      - 'mobile-panel/**'
+      - '.github/workflows/deploy-mobile-panel.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-panel-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/v5'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: mobile-panel
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check existing Worker and configuration
+        run: node check-cloudflare.mjs
+      - name: Install tools
+        run: npm install --no-audit --no-fund
+      - name: Check and test panel
+        run: |
+          node --check worker.mjs
+          npm test
+      - name: Deploy existing Worker
+        run: npm run deploy
