@@ -67,6 +67,23 @@ const css = `
 .mj-note-resources--resources ol{list-style:none;padding:0}
 .mj-note-resources--citations{font-size:.95rem}
 @media(max-width:600px){.mj-library .mj-library-card{padding:18px}.mj-library .mj-library-card h3{font-size:1.1rem}}
+/* Compact cards and distinct actions */
+.mj-library .mj-library-grid{gap:10px}
+.mj-library .mj-library-card{padding:14px 16px;border-radius:14px;gap:2px}
+.mj-library .mj-library-card h3{font-size:1rem;line-height:1.65;margin:0 0 4px}
+.mj-library .mj-library-author{font-size:.8rem;line-height:1.6;margin:0 0 4px}
+.mj-library .mj-library-card p{font-size:.85rem;line-height:1.7;margin:4px 0}
+.mj-library .mj-library-description-preview{-webkit-line-clamp:1;white-space:normal}
+.mj-library-description summary{font-size:.78rem;min-height:0;padding:4px 0;line-height:1.6;text-decoration:none;color:var(--secondary)}
+.mj-library .mj-library-actions{margin-top:4px;padding-top:4px;gap:8px}
+.mj-library .mj-library-card .mj-library-action{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:6px 13px;min-height:44px;border-radius:11px;font-size:.82rem;font-weight:700;line-height:1.4;transition:transform .15s,box-shadow .15s,background .15s}
+.mj-library .mj-library-card .mj-library-action--view{background:var(--highlight);color:var(--dark);border:1px solid var(--secondary)}
+.mj-library .mj-library-card .mj-library-action--download{background:linear-gradient(135deg,#087f83,#08666c);color:#fff;border:1px solid #178e94;box-shadow:0 3px 8px #0002}
+.mj-library .mj-library-card .mj-library-action:hover{transform:translateY(-1px);box-shadow:0 4px 10px #0003;outline:none}
+.mj-library .mj-library-card .mj-library-action:focus-visible{outline:2px solid var(--secondary);outline-offset:3px}
+.mj-library .mj-library-action span[aria-hidden]{font-size:1rem;line-height:1}
+@media(prefers-reduced-motion:reduce){.mj-library .mj-library-card .mj-library-action{transition:none}.mj-library .mj-library-card .mj-library-action:hover{transform:none}}
+@media(max-width:600px){.mj-library .mj-library-card{padding:12px}.mj-library .mj-library-card h3{font-size:.95rem}}
 @media print{.mj-library-description .mj-library-description-preview,.mj-library-description summary{display:none}.mj-library-description .mj-library-description-full{display:block}}
 `
 export function NoteResources({ root, references }: { root: string; references: unknown }) {
@@ -107,6 +124,6 @@ export function LibraryPage({ root, path }: { root: string; path: string }) {
   return <section class={`mj-library mj-library--${kind.id}`} aria-label={kind.title}>
     <header class="mj-library-hero"><a class="mj-library-kicker" href={`${root}/`}>منِ جمعی / منابع پیشنهادی</a><h1>{kind.title}</h1><p>{kind.description}</p><p>{items.length.toLocaleString("fa-IR")} منبع برای مطالعه و تأمل</p></header>
     <nav class="mj-library-tabs" aria-label="نوع منابع">{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`} aria-current={k.id === kind.id ? "page" : undefined}><span aria-hidden="true">{k.icon}</span> {k.title}</a>)}</nav>
-    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article id={`resource-${encodeURIComponent(item.id)}`} style="scroll-margin-top:100px" class="mj-library-card"><h3>{item.title}</h3><div class="mj-library-author">{[item.author, item.year, item.journal].filter(value => value !== undefined && value !== null && String(value).trim() !== "").join(" · ") || "منبع پیشنهادی"}</div>{item.description && <ResourceDescription text={item.description} />}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهده ↗</a>}<a class="mj-library-action" href={downloadSettings.endpoint ? `${downloadSettings.endpoint}?file=${encodeURIComponent(item.url.split('/').pop()!)}` : href(item.url)} data-mj-download={downloadSettings.endpoint ? undefined : "true"} download>دانلود ↓</a></> : <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهدهٔ منبع ↗</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
+    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article id={`resource-${encodeURIComponent(item.id)}`} style="scroll-margin-top:100px" class="mj-library-card"><h3>{item.title}</h3><div class="mj-library-author">{[item.author, item.year, item.journal].filter(value => value !== undefined && value !== null && String(value).trim() !== "").join(" · ") || "منبع پیشنهادی"}</div>{item.description && <ResourceDescription text={item.description} />}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action mj-library-action--view" href={href(item.url)} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">👁️</span> مشاهده</a>}<a class="mj-library-action mj-library-action--download" href={downloadSettings.endpoint ? `${downloadSettings.endpoint}?file=${encodeURIComponent(item.url.split('/').pop()!)}` : href(item.url)} data-mj-download={downloadSettings.endpoint ? undefined : "true"} download><span aria-hidden="true">📥</span> دانلود</a></> : <a class="mj-library-action mj-library-action--view" href={href(item.url)} target="_blank" rel="noopener noreferrer"><span aria-hidden="true">👁️</span> مشاهده</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
   </section>
 }
