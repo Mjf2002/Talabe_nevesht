@@ -1,14 +1,14 @@
 // Loaded by the frame itself: does not depend on Header being registered in the layout.
 export const homeLayoutCSS = `
 .center:has(#mj-main.mj-home) { width:100%; min-width:0; box-sizing:border-box; }
-.center:has(.mj-home) .page-header { padding-top:0!important; margin-top:0!important; }
+.center:has(.mj-home) .page-header { padding-top:0!important; margin-top:0!important; margin-bottom:0!important; padding-bottom:0!important; min-height:0!important; }
 .center:has(.mj-home) .mj-heading-row { min-height:0!important; margin:0!important; padding:0!important; }
 .center:has(.mj-home) .mj-tools { position:absolute; top:1rem; inset-inline-end:1rem; }
-.center:has(.mj-home) .mj-site-header { position:relative; padding-top:1rem!important; }
+.center:has(.mj-home) .mj-site-header { position:relative; padding-top:1rem!important; margin-bottom:0!important; padding-bottom:0!important; }
 .center:has(.mj-home) .mj-navigation { display:flex!important; justify-content:center!important; flex-wrap:wrap; gap:1rem 2rem; padding:1rem 5rem!important; margin:0!important; border-top:0!important; }
 .center:has(.mj-home) .popover-hint { display:none!important; }
 .center #mj-main.mj-home { max-width:960px!important; width:100%!important; box-sizing:border-box; padding:0 1rem!important; margin:0 auto!important; direction:rtl; }
-#mj-main.mj-home .mj-home-hero { text-align:center; padding:2.5rem 0 1.5rem; }
+#mj-main.mj-home .mj-home-hero { text-align:center; padding:1rem 0 1.5rem!important; margin-top:0!important; min-height:0!important; }
 #mj-main.mj-home .mj-home-hero h1 { margin:0 0 1rem!important; font-size:clamp(2.3rem,5vw,3.5rem); line-height:1.5; }
 #mj-main.mj-home .mj-home-hero p { margin:0; line-height:2; }
 #mj-main.mj-home section > h2 { display:flex; align-items:center; justify-content:center; gap:1.4rem; text-align:center!important; margin:0 0 1.5rem!important; font-size:1.35rem; }
@@ -30,7 +30,10 @@ export const homeLayoutCSS = `
 #mj-main.mj-home .mj-recent-notes:not(.mj-start-notes) ul { padding:0!important; list-style:none; }
 #mj-main.mj-home .mj-recent-notes:not(.mj-start-notes) li { padding:.85rem 1rem; border:1px solid var(--gray); border-radius:7px; margin:.7rem 0; }
 #mj-main.mj-home .mj-recent-notes:not(.mj-start-notes) li a { display:block; text-decoration:none; }
-.center:has(.mj-home) .mj-site-footer { max-width:928px!important; margin:3rem auto 1rem!important; padding-top:1.5rem; border-top:1px solid var(--gray); }
+#mj-main.mj-home .mj-recent-notes li a,
+#mj-main.mj-home .mj-start-notes li a { background:transparent!important; box-shadow:none!important; text-shadow:none!important; }
+.center:has(.mj-home) .mj-site-footer { max-width:928px!important; margin:3rem auto 1rem!important; padding-top:.5rem!important; border-top:1px solid var(--gray); }
+.center:has(.mj-home) .mj-site-footer > * { margin-top:0!important; margin-bottom:0!important; }
 @media(max-width:650px) {
  .center:has(.mj-home) .mj-site-header { display:flex!important; flex-direction:column; padding-top:0!important; }
  .center:has(.mj-home) .mj-navigation { order:0; padding:.8rem 0!important; gap:.6rem 1.2rem; }
