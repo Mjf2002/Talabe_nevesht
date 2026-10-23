@@ -41,12 +41,19 @@ const css = `
 `
 export function NoteResources({ root, references }: { root: string; references: unknown }) {
   if (!Array.isArray(references) || !references.length) return null
-  return <section class="mj-note-resources" dir="rtl"><h2>منابع این یادداشت</h2><ol>{references.map(ref => {
+  const sections = [{id: "further-reading", title: "برای مطالعه بیشتر"}, {id: "resources", title: "منابع"}, {id: "citations", title: "ارجاعات"}]
+  const valid = references.filter(ref => ref && typeof ref === "object" && typeof ref.id === "string")
+  const group = (ref: any) => sections.some(section => section.id === ref.section) ? ref.section : "resources"
+  return <>{sections.map(section => {
+    const entries = valid.filter(ref => group(ref) === section.id)
+    if (!entries.length) return null
+    return <section class="mj-note-resources" dir="rtl"><h2>{section.title}</h2><ol>{entries.map(ref => {
     if (!ref || typeof ref !== "object" || typeof ref.id !== "string") return null
     const item = data.items.find(i => i.id === ref.id)
     const kind = item && libraryKinds.find(k => k.id === item.kind)
     return <li>{item && kind ? <a href={`${root}/resources/${kind.path}#resource-${encodeURIComponent(item.id)}`}>{item.title}{item.author ? ` — ${item.author}` : ""}</a> : <span>منبع در دسترس نیست</span>}{typeof ref.pages === "string" && ref.pages && <span>، ص. {ref.pages}</span>}{typeof ref.note === "string" && ref.note && <p>{ref.note}</p>}</li>
   })}</ol></section>
+  })}</>
 }
 export function LibraryStyles() { return <style>{css}</style> }
 export function LibraryMenu({ root }: { root: string }) {
