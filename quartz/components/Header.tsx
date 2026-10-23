@@ -10,10 +10,10 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
     <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-heading-row">
-        <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
+        {slug !== "index" && <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
           <span class="mj-wordmark">{settings.header.title}</span>
           <span class="mj-subtitle">{settings.header.subtitle}</span>
-        </a>
+        </a>}
         <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
       </div>
       <nav class="mj-navigation" aria-label="منوی اصلی">
@@ -29,6 +29,15 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
 }
 
 Header.css = `
+.center .mj-site-header .mj-navigation { display: flex; justify-content: center; flex-wrap: wrap; width: 100%; gap: .6rem 1.6rem; margin-inline: auto; }
+.center #mj-main.mj-home .mj-home-columns { display: block; }
+.center #mj-main.mj-home .mj-home-paths { display: none; }
+.center #mj-main.mj-home .mj-topic-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.center #mj-main.mj-home .mj-start-notes { margin-block: 2rem; }
+.center #mj-main.mj-home .mj-home-topics > h2 { text-align: center; margin-bottom: 1.2rem; }
+.center #mj-main.mj-home .mj-hero-actions { display: none; }
+@media (max-width: 600px) { .center #mj-main.mj-home .mj-topic-cards { grid-template-columns: 1fr; } }
+
 .center { --secondary: var(--mj-admin-accent, #4f6d5c); --tertiary: var(--mj-admin-accent, #4f6d5c); }
 .center #mj-main, .center .page-header, .center .mj-site-footer { width: 100%; max-width: var(--mj-admin-width, 850px); margin-inline: auto; }
 .center #mj-main, .center #mj-main article { font-size: var(--mj-admin-font-size, 17px); }

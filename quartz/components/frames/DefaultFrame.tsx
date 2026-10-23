@@ -106,7 +106,7 @@ export const DefaultFrame: PageFrame = {
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
               <ol>{startNotes.map((entry, index) => <li key={index}>{entry.slug ? <a class="internal" href={`${root}/${entry.slug}`}>{entry.title}</a> : <span>{entry.title}</span>}</li>)}</ol>
             </section>}
-            {slug === "index" && <div class={`mj-home-columns${homeSelection.pathsEnabled === false && homeSelection.pathsTitleEnabled === false ? ' mj-home-columns-single' : ''}`}><section class="mj-home-topics"><h2>{settings.home.topicsTitle}</h2><nav class="mj-home-cards mj-topic-cards" aria-label="فهرست موضوعی">{rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>
+            {slug === "index" && <div class={`mj-home-columns${homeSelection.pathsEnabled === false && homeSelection.pathsTitleEnabled === false ? ' mj-home-columns-single' : ''}`}><section class="mj-home-topics"><h2>یادداشت‌ها</h2><nav class="mj-home-cards mj-topic-cards" aria-label="فهرست موضوعی">{rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>
             {(homeSelection.pathsEnabled !== false || homeSelection.pathsTitleEnabled !== false) && <section class="mj-home-paths">{homeSelection.pathsTitleEnabled !== false && <h2>مسیرهای مطالعه</h2>}{homeSelection.pathsEnabled !== false && <nav class="mj-home-cards" aria-label="مسیرهای مطالعه">
               <a href={`${root}/notes`}><span class="mj-card-label">خواندن</span><strong>فهرست نوشته‌ها</strong><span>همهٔ یادداشت‌ها در یک نگاه ←</span></a>
               <a href={`${root}/about`}><span class="mj-card-label">آشنایی</span><strong>دربارهٔ من</strong><span>نویسنده و این فضای نوشتن ←</span></a>
@@ -138,7 +138,7 @@ export const DefaultFrame: PageFrame = {
           <div class="page-footer">{!isLibrary && afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer">
-            <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
+            <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">محلی برای اندیشیدن درباره اندیشه ها</span>
             {settings.footer.links.length > 0 && <div class="mj-contact-links">
               {settings.footer.links.map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
             </div>}
