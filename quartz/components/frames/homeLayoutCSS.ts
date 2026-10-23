@@ -44,7 +44,12 @@ export const homeLayoutCSS = `
  #mj-main.mj-home section > h2:before,
  #mj-main.mj-home section > h2:after { width:auto!important; min-width:0; flex:1 1 0!important; }
  .center #mj-main.mj-home .mj-topic-cards,#mj-main.mj-home .mj-start-notes ol { grid-template-columns:1fr!important; }
- #mj-main.mj-home .mj-home-hero { padding:1.8rem 0 1rem; }
+ .center:has(.mj-home) .page-header { margin-bottom:0!important; padding-bottom:0!important; gap:0!important; min-height:0!important; }
+ .center:has(.mj-home) .mj-site-header { margin-bottom:0!important; padding-bottom:0!important; gap:0!important; min-height:0!important; }
+ .center:has(.mj-home) .mj-heading-row { margin-bottom:0!important; padding-bottom:0!important; }
+ .center #mj-main.mj-home { margin-top:0!important; padding-top:0!important; }
+ #mj-main.mj-home .mj-home-hero { padding:1rem 0 1rem!important; margin-top:0!important; min-height:0!important; }
+ #mj-main.mj-home .mj-home-hero h1 { margin-top:0!important; margin-bottom:.65rem!important; }
  .center:has(.mj-home) .mj-site-footer { margin-inline:1rem!important; width:auto!important; }
 }
 `
