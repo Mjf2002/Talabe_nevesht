@@ -1,6 +1,6 @@
 import downloadSettings from "../../download-settings.json"
 import resourceData from "../../resources.json"
-const data = resourceData as { boxes: { id: string; title: string; parent: string; topic: string }[]; items: { id: string; title: string; author: string; description: string; box: string; kind: string; url: string }[] }
+const data = resourceData as { boxes: { id: string; title: string; parent: string; topic: string }[]; items: { id: string; title: string; author: string; year?: string | number; journal?: string; description: string; box: string; kind: string; url: string }[] }
 
 export const libraryKinds = [
   { id: "book", path: "books", title: "کتاب‌ها", icon: "📚", description: "کتاب‌هایی برای عمیق‌تر خواندن و دقیق‌تر اندیشیدن." },
@@ -43,6 +43,31 @@ const css = `
 .mj-library-empty{border:1px dashed var(--lightgray);border-radius:18px;padding:30px;text-align:center;color:var(--gray)}
 @media(max-width:600px){.mj-library-grid{grid-template-columns:1fr}.mj-library-hero{padding:26px 20px}.mj-library .mj-library-hero h1{font-size:2rem}.mj-library-card{padding:20px}}
 @media print{.mj-library-menu{display:none}}
+/* Reading-first resource layout; scoped to avoid changing the site theme. */
+.mj-library .mj-library-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.mj-library--article .mj-library-grid{grid-template-columns:minmax(0,1fr)}
+.mj-library .mj-library-card{text-align:right;gap:4px}
+.mj-library .mj-library-card h3{margin:0 0 8px;line-height:1.9}
+.mj-library .mj-library-card p{color:var(--dark);text-align:right;line-height:1.95;margin:8px 0;word-spacing:normal}
+.mj-library .mj-library-author{color:var(--dark);font-size:.9rem;line-height:1.9;margin-bottom:8px}
+.mj-library .mj-library-action{color:var(--dark);background:var(--highlight);border-color:var(--secondary);min-height:44px;display:inline-flex;align-items:center;box-sizing:border-box}
+.mj-library .mj-library-action:hover{outline:1px solid var(--secondary)}
+.mj-library-description-preview{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.mj-library-description summary{cursor:pointer;color:var(--dark);text-decoration:underline;text-underline-offset:4px;padding:8px 0;min-height:44px;box-sizing:border-box}
+.mj-library-description summary:focus-visible{outline:2px solid var(--secondary);outline-offset:3px}
+.mj-library-description .mj-library-description-full{display:none}
+.mj-library-description:has(details[open]) .mj-library-description-preview{display:none}
+.mj-library-description details[open] .mj-library-description-full{display:block}
+.mj-note-resources li{text-align:right;word-spacing:normal}
+.mj-note-resources li p{color:var(--dark)}
+.mj-note-resources--further-reading ol{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;padding:0;list-style:none}
+.mj-note-resources--further-reading li{padding:14px;border:1px solid var(--lightgray);border-radius:12px;background:var(--light)}
+.mj-note-resources--further-reading li+li{border-top:1px solid var(--lightgray)}
+.mj-note-resources--resources{border-inline-start-width:1px;border-radius:8px;background:transparent}
+.mj-note-resources--resources ol{list-style:none;padding:0}
+.mj-note-resources--citations{font-size:.95rem}
+@media(max-width:600px){.mj-library .mj-library-card{padding:18px}.mj-library .mj-library-card h3{font-size:1.1rem}}
+@media print{.mj-library-description .mj-library-description-preview,.mj-library-description summary{display:none}.mj-library-description .mj-library-description-full{display:block}}
 `
 export function NoteResources({ root, references }: { root: string; references: unknown }) {
   if (!Array.isArray(references) || !references.length) return null
@@ -56,9 +81,12 @@ export function NoteResources({ root, references }: { root: string; references: 
     if (!ref || typeof ref !== "object" || typeof ref.id !== "string") return null
     const item = data.items.find(i => i.id === ref.id)
     const kind = item && libraryKinds.find(k => k.id === item.kind)
-    return <li>{item && kind ? <a href={`${root}/resources/${kind.path}#resource-${encodeURIComponent(item.id)}`}>{item.title}{item.author ? ` — ${item.author}` : ""}</a> : <span>منبع در دسترس نیست</span>}{typeof ref.pages === "string" && ref.pages && <span>، ص. {ref.pages}</span>}{typeof ref.note === "string" && ref.note && <p>{ref.note}</p>}</li>
+    return <li>{item && kind ? <a href={`${root}/resources/${kind.path}#resource-${encodeURIComponent(item.id)}`}>{item.title}{[item.author, item.year, item.journal].filter(value => value !== undefined && value !== null && String(value).trim() !== "").length > 0 ? ` — ${[item.author, item.year, item.journal].filter(value => value !== undefined && value !== null && String(value).trim() !== "").join("، ")}` : ""}</a> : <span>منبع در دسترس نیست</span>}{typeof ref.pages === "string" && ref.pages && <span>، ص. {ref.pages}</span>}{typeof ref.note === "string" && ref.note && <p>{ref.note}</p>}</li>
   })}</ol></section>
   })}</>
+}
+export function ResourceDescription({ text }: { text: string }) {
+  return <div class="mj-library-description"><p class="mj-library-description-preview" aria-hidden="true">{text}</p><details><summary>توضیحات بیشتر</summary><p class="mj-library-description-full">{text}</p></details></div>
 }
 export function LibraryStyles() { return <style>{css}</style> }
 export function LibraryMenu({ root }: { root: string }) {
@@ -76,9 +104,9 @@ export function LibraryPage({ root, path }: { root: string; path: string }) {
     return [box.parent ? ancestry(box.parent, seen) : "", box.title].filter(Boolean).join(" / ")
   }
   const groups = [...new Set(items.map(i => i.box))]
-  return <section class="mj-library" aria-label={kind.title}>
+  return <section class={`mj-library mj-library--${kind.id}`} aria-label={kind.title}>
     <header class="mj-library-hero"><a class="mj-library-kicker" href={`${root}/`}>منِ جمعی / منابع پیشنهادی</a><h1>{kind.title}</h1><p>{kind.description}</p><p>{items.length.toLocaleString("fa-IR")} منبع برای مطالعه و تأمل</p></header>
     <nav class="mj-library-tabs" aria-label="نوع منابع">{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`} aria-current={k.id === kind.id ? "page" : undefined}><span aria-hidden="true">{k.icon}</span> {k.title}</a>)}</nav>
-    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article id={`resource-${encodeURIComponent(item.id)}`} style="scroll-margin-top:100px" class="mj-library-card"><span class="mj-library-author">{item.author || "منبع پیشنهادی"}</span><h3>{item.title}</h3>{item.description && <p>{item.description}</p>}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهده ↗</a>}<a class="mj-library-action" href={downloadSettings.endpoint ? `${downloadSettings.endpoint}?file=${encodeURIComponent(item.url.split('/').pop()!)}` : href(item.url)} data-mj-download={downloadSettings.endpoint ? undefined : "true"} download>دانلود ↓</a></> : <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهدهٔ منبع ↗</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
+    {groups.length ? groups.map(id => <section class="mj-library-group"><h2>{ancestry(id)}</h2><div class="mj-library-grid">{items.filter(i => i.box === id).map(item => <article id={`resource-${encodeURIComponent(item.id)}`} style="scroll-margin-top:100px" class="mj-library-card"><h3>{item.title}</h3><div class="mj-library-author">{[item.author, item.year, item.journal].filter(value => value !== undefined && value !== null && String(value).trim() !== "").join(" · ") || "منبع پیشنهادی"}</div>{item.description && <ResourceDescription text={item.description} />}<div class="mj-library-actions">{item.url.startsWith("/resources/files/") ? <>{/\.(pdf|png|jpe?g|gif|webp|svg|avif|mp3|wav|ogg|m4a|mp4|webm|mov)$/i.test(item.url) && <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهده ↗</a>}<a class="mj-library-action" href={downloadSettings.endpoint ? `${downloadSettings.endpoint}?file=${encodeURIComponent(item.url.split('/').pop()!)}` : href(item.url)} data-mj-download={downloadSettings.endpoint ? undefined : "true"} download>دانلود ↓</a></> : <a class="mj-library-action" href={href(item.url)} target="_blank" rel="noopener noreferrer">مشاهدهٔ منبع ↗</a>}</div></article>)}</div></section>) : <p class="mj-library-empty">هنوز منبعی در این بخش ثبت نشده است.</p>}
   </section>
 }
