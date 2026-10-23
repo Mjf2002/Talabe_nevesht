@@ -1,3 +1,4 @@
+import { homeLayoutCSS } from "./homeLayoutCSS"
 import { NoteResources, LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
@@ -88,6 +89,7 @@ export const DefaultFrame: PageFrame = {
     const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:850px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
       <>
+        {slug === "index" && <style dangerouslySetInnerHTML={{ __html: homeLayoutCSS }} />}
         <div class="center" style={style}>
           <div class="page-header">
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
@@ -100,13 +102,13 @@ export const DefaultFrame: PageFrame = {
           <LibraryStyles />
           <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
-            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : <Content {...componentData} />}
+            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero"><h1>{settings.header.title}</h1><p>{settings.header.subtitle}</p></section> : <Content {...componentData} />}
             {isNote && <NoteResources root={root} references={componentData.fileData.frontmatter?.resourceReferences} />}
              {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
               <ol>{startNotes.map((entry, index) => <li key={index}>{entry.slug ? <a class="internal" href={`${root}/${entry.slug}`}>{entry.title}</a> : <span>{entry.title}</span>}</li>)}</ol>
             </section>}
-            {slug === "index" && <div class={`mj-home-columns${homeSelection.pathsEnabled === false && homeSelection.pathsTitleEnabled === false ? ' mj-home-columns-single' : ''}`}><section class="mj-home-topics"><h2>یادداشت‌ها</h2><nav class="mj-home-cards mj-topic-cards" aria-label="فهرست موضوعی">{rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>
+            {slug === "index" && <div class={`mj-home-columns${homeSelection.pathsEnabled === false && homeSelection.pathsTitleEnabled === false ? ' mj-home-columns-single' : ''}`}><section class="mj-home-topics"><h2>{settings.home.topicsTitle}</h2><nav class="mj-home-cards mj-topic-cards" aria-label="فهرست موضوعی">{rootCategories.map((category, index) => <a key={category.slug} href={`${root}/${category.slug}/`}><svg class="mj-topic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">{index % 3 === 0 ? <path d="M4 20h16M6 17V8l6-5 6 5v9M9 17v-5h6v5M3 8h18" /> : index % 3 === 1 ? <path d="M9 18h6M9 21h6M8 14a7 7 0 1 1 8 0l-1 2H9z" /> : <path d="m4 17-1 4 4-1L21 6l-3-3L4 17ZM14 7l3 3M3 22h18" />}</svg><strong>{category.title}</strong><span class="mj-topic-description">{category.description}</span><span class="mj-topic-button">ورود به یادداشت‌ها</span></a>)}</nav></section>
             {(homeSelection.pathsEnabled !== false || homeSelection.pathsTitleEnabled !== false) && <section class="mj-home-paths">{homeSelection.pathsTitleEnabled !== false && <h2>مسیرهای مطالعه</h2>}{homeSelection.pathsEnabled !== false && <nav class="mj-home-cards" aria-label="مسیرهای مطالعه">
               <a href={`${root}/notes`}><span class="mj-card-label">خواندن</span><strong>فهرست نوشته‌ها</strong><span>همهٔ یادداشت‌ها در یک نگاه ←</span></a>
               <a href={`${root}/about`}><span class="mj-card-label">آشنایی</span><strong>دربارهٔ من</strong><span>نویسنده و این فضای نوشتن ←</span></a>
@@ -138,7 +140,7 @@ export const DefaultFrame: PageFrame = {
           <div class="page-footer">{!isLibrary && afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer">
-            <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">محلی برای اندیشیدن درباره اندیشه ها</span>
+            <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
             {settings.footer.links.length > 0 && <div class="mj-contact-links">
               {settings.footer.links.map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
             </div>}
