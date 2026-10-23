@@ -1,0 +1,1 @@
+{"name":"manejamei-mobile-panel","private":true,"version":"1.0.0","type":"module","scripts":{"deploy":"wrangler deploy","dev":"wrangler dev","test":"node --test tests.mjs"},"devDependencies":{"wrangler":"^4.0.0"}}

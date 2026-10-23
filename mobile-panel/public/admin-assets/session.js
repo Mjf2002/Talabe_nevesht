@@ -1,0 +1,3 @@
+import {api} from './remote.js';
+document.querySelector('#logout').onclick=async()=>{try{window.panelUser ||=await api('/api/me');await api('/auth/logout',{method:'POST',body:'{}'});location.href='/login.html'}catch(e){alert(e.message)}};
+document.querySelector('#actions-status').onclick=async()=>{try{const runs=await api('/api/status');const status=document.querySelector('#status');status.replaceChildren();for(const run of runs){const p=document.createElement('p'),a=document.createElement('a');a.textContent=run.name+' — '+run.status;a.href=run.url;a.target='_blank';a.rel='noopener';p.append(a);status.append(p)}if(!runs.length)status.textContent='اجرایی یافت نشد.'}catch(e){alert(e.message)}};
