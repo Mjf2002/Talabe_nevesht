@@ -1,6 +1,6 @@
+import { homeLayoutCSS } from "./homeLayoutCSS"
 import { noteDate } from "../noteDate"
 import { articleChatEndpoint } from "../articleChatConfig"
-import { homeLayoutCSS } from "./homeLayoutCSS"
 import { NoteResources, LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
@@ -88,7 +88,7 @@ export const DefaultFrame: PageFrame = {
     const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:850px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
       <>
-        {slug === "index" && <style dangerouslySetInnerHTML={{ __html: homeLayoutCSS }} />}
+        <style dangerouslySetInnerHTML={{ __html: homeLayoutCSS }} />
         <div class="center" style={style}>
           <div class="page-header">
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
@@ -102,7 +102,7 @@ export const DefaultFrame: PageFrame = {
           <LibraryStyles />
           <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
-            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero"><h1>{settings.header.title}</h1><p>{settings.header.subtitle}</p></section> : <Content {...componentData} />}
+            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero"><div class="mj-hero-copy"><span class="mj-hero-eyebrow">یادداشت‌ها و تأملات</span><h1>{settings.header.title}</h1><p>{settings.header.subtitle}</p><div class="mj-hero-actions">{startSettings.startEnabled !== false && <a href="#mj-start">برای شروع <span aria-hidden="true">←</span></a>}<a href={`${root}/notes`}>همهٔ نوشته‌ها</a></div></div><div class="mj-hero-seal" aria-hidden="true"><strong>{settings.header.title}</strong><span>اندیشه · جامعه · زندگی</span></div></section> : <Content {...componentData} />}
             {isNote && <section data-article-chat data-endpoint={articleChatEndpoint} dir="rtl">
  <button type="button" class="mj-chat-launch" aria-expanded="false">✦ گفت‌وگو با نوشته <span>پرسش، کشف، فهم بهتر</span></button>
  <aside class="mj-chat-panel" hidden aria-label="دستیار مطالعه">
@@ -115,7 +115,7 @@ export const DefaultFrame: PageFrame = {
  <div class="mj-chat-footer"><button type="button" data-reset>گفت‌وگوی تازه</button><span>هر پرسش مستقل است · پاسخ ممکن است خطا داشته باشد</span></div></form>
  </aside></section>}
              {isNote && <NoteResources root={root} references={componentData.fileData.frontmatter?.resourceReferences} />}
-             {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
+             {slug === "index" && startSettings.startEnabled !== false && <section id="mj-start" class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
               <ol>{startNotes.map((entry, index) => <li key={index}>{entry.slug ? <a class="internal" href={`${root}/${entry.slug}`}>{entry.title}</a> : <span>{entry.title}</span>}</li>)}</ol>
             </section>}
@@ -131,7 +131,7 @@ export const DefaultFrame: PageFrame = {
             </section>}
             {slug === "index" && settings.home.recentEnabled && recent.length > 0 && <section class="mj-recent-notes" aria-label={settings.home.recentTitle}>
               <h2>{settings.home.recentTitle}</h2>
-              <ul>{recent.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul>
+              <ul>{recent.map((file) => { const date = noteDate(file.frontmatter); const description = String(file.frontmatter?.description ?? ""); return <li key={String(file.slug)}><span class="mj-note-kicker">یادداشت <span aria-hidden="true">↗</span></span><a class="internal mj-note-card-title" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a>{description && <p class="mj-card-excerpt">{description.slice(0, 180)}{description.length > 180 ? "…" : ""}</p>}<div class="mj-card-meta">{date && <time dateTime={date.iso}>{date.label}</time>}<a class="internal mj-card-read" href={`${root}/${file.slug}`}>خواندن نوشته ←</a></div></li> })}</ul>
             </section>}
             {(slug === "notes" || slug === "notes/index") && <nav class="mj-home-cards mj-topic-cards" aria-label="موضوع‌های یادداشت‌ها">
               {rootCategories.map((category) => <a key={category.slug} href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}
