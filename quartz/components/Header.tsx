@@ -11,19 +11,20 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
   return (
     <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
-      <div class="mjp-wrap mjp-bar">
-        <a class="mjp-brand" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
-          {settings.header.title}<small>{settings.header.subtitle}</small>
-        </a>
-      <nav class="mjp-nav" aria-label="منوی اصلی">
+      <div class="mj-heading-row">
+        {slug !== "index" && <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
+          <span class="mj-wordmark">{settings.header.title}</span>
+          <span class="mj-subtitle">{settings.header.subtitle}</span>
+        </a>}
+        <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
+      </div>
+      <nav class="mj-navigation" aria-label="منوی اصلی">
         {links.map((link, index) => {
           const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
           const active = slug === target || (target === "notes" && slug.startsWith("notes/"))
           return <a key={index} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}>{link.label}</a>
         })}
       </nav>
-        <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
-      </div>
       {children}
     </header>
   )
