@@ -85,6 +85,19 @@ const css = `
 @media(prefers-reduced-motion:reduce){.mj-library .mj-library-card .mj-library-action{transition:none}.mj-library .mj-library-card .mj-library-action:hover{transform:none}}
 @media(max-width:600px){.mj-library .mj-library-card{padding:12px}.mj-library .mj-library-card h3{font-size:.95rem}}
 @media print{.mj-library-description .mj-library-description-preview,.mj-library-description summary{display:none}.mj-library-description .mj-library-description-full{display:block}}
+/* Gentle entrance; native details semantics and keyboard controls stay intact. */
+.mj-library-menu .mj-library-chevron{display:inline-block;transition:transform .28s ease}
+.mj-library-menu[open] .mj-library-chevron{transform:rotate(180deg)}
+.mj-library-menu[open] nav{animation:mj-library-reveal .3s cubic-bezier(.2,.7,.3,1) both;transform-origin:bottom right}
+@keyframes mj-library-reveal{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@supports (transition-behavior:allow-discrete){
+ .mj-library-menu::details-content{content-visibility:hidden;opacity:0;transform:translateY(10px);transition:opacity .28s ease,transform .28s ease,content-visibility .28s allow-discrete}
+ .mj-library-menu[open]::details-content{content-visibility:visible;opacity:1;transform:translateY(0)}
+ @starting-style{.mj-library-menu[open]::details-content{opacity:0;transform:translateY(10px)}}
+ .mj-library-menu[open] nav{animation:none}
+}
+@media(prefers-reduced-motion:reduce){.mj-library-menu[open] nav{animation:none}.mj-library-menu::details-content,.mj-library-menu .mj-library-chevron{transition:none}}
+
 `
 export function NoteResources({ root, references }: { root: string; references: unknown }) {
   if (!Array.isArray(references) || !references.length) return null
@@ -107,7 +120,7 @@ export function ResourceDescription({ text }: { text: string }) {
 }
 export function LibraryStyles() { return <style>{css}</style> }
 export function LibraryMenu({ root }: { root: string }) {
-  return <details class="mj-library-menu"><summary>منابع پیشنهادی <span aria-hidden="true">⌃</span></summary><nav aria-label="منابع پیشنهادی"><div>{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`}><span aria-hidden="true">{k.icon}</span>{k.title}</a>)}</div></nav></details>
+  return <details class="mj-library-menu"><summary><span aria-hidden="true">📚</span> منابع پیشنهادی <span class="mj-library-chevron" aria-hidden="true">⌃</span></summary><nav aria-label="منابع پیشنهادی"><div>{libraryKinds.map(k => <a href={`${root}/resources/${k.path}`}><span aria-hidden="true">{k.icon}</span>{k.title}</a>)}</div></nav></details>
 }
 export function LibraryPage({ root, path }: { root: string; path: string }) {
   const kind = libraryKinds.find(k => path === `resources/${k.path}`)!
