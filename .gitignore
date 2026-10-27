@@ -12,3 +12,10 @@ replit.nix
 .quartz/
 quartz/cli/tui/dist/
 .turbo/
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
