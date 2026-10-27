@@ -1,3 +1,4 @@
+import { readingTocScript } from "./readingTocScript"
 import { articleChatScript } from "./articleChatScript"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { pathToRoot } from "../util/path"
@@ -133,3 +134,4 @@ Header.afterDOMLoaded += `
 `
 
 Header.afterDOMLoaded += articleChatScript
+Header.afterDOMLoaded += readingTocScript
