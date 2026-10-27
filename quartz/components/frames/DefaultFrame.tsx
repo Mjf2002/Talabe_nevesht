@@ -104,18 +104,18 @@ export const DefaultFrame: PageFrame = {
           <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero"><h1>{settings.header.title}</h1><p>{settings.header.subtitle}</p></section> : <Content {...componentData} />}
-            {isNote && <details data-article-chat data-endpoint={articleChatEndpoint} dir="rtl" style="margin-block:2rem;padding:1.2rem;border:1px solid var(--lightgray);border-radius:16px;background:var(--light)">
-              <summary style="cursor:pointer;font-weight:bold">گفت‌وگو با این نوشته</summary>
-              <p>پاسخ بر اساس همین نوشته است؛ ارجاع‌ها و برداشت مدل را با متن اصلی بررسی کنید. هر پرسش مستقل است.</p>
-              <div style="display:flex;gap:.5rem;flex-wrap:wrap">{["ایدهٔ اصلی این نوشته چیست؟", "استدلال نویسنده را خلاصه کن", "کدام پرسش‌ها در متن بی‌پاسخ مانده‌اند؟"].map(q => <button type="button" data-question>{q}</button>)}</div>
-              <div role="log" aria-live="polite" aria-label="پرسش و پاسخ" style="max-height:420px;overflow:auto"></div>
-              <form>
-                <label>پرسش شما<textarea required maxLength={2000} rows={3} style="display:block;box-sizing:border-box;width:100%;font:inherit;margin-block:.8rem" /></label>
-                <label style="display:block"><input type="checkbox" required /> موافقم متن نوشته و پرسشم به سرویس مدل ارسال شود.</label>
-                <button type="submit" style="margin-top:1rem">ارسال پرسش</button>
-              </form>
-            </details>}
-            {isNote && <NoteResources root={root} references={componentData.fileData.frontmatter?.resourceReferences} />}
+            {isNote && <section data-article-chat data-endpoint={articleChatEndpoint} dir="rtl">
+ <button type="button" class="mj-chat-launch" aria-expanded="false">✦ گفت‌وگو با نوشته <span>پرسش، کشف، فهم بهتر</span></button>
+ <aside class="mj-chat-panel" hidden aria-label="دستیار مطالعه">
+ <header class="mj-chat-header"><div><strong>✦ دستیار مطالعه</strong><small>همراه شما برای فهم این نوشته</small></div><button type="button" data-close aria-label="بستن گفت‌وگو">✕</button></header>
+ <div class="mj-chat-scroll"><div class="mj-chat-welcome"><span class="mj-chat-orb">✦</span><h2>از دل نوشته، بیشتر کشف کن.</h2><p>ایده‌ها را روشن‌تر ببین، استدلال‌ها را بررسی کن و به متن برگرد.</p></div>
+ <div class="mj-chat-suggestions">{["ایدهٔ اصلی این نوشته چیست؟", "این نوشته را ساده‌تر توضیح بده", "کدام پرسش‌ها در متن بی‌پاسخ مانده‌اند؟"].map(q => <button type="button" data-question>{q}<span>↗</span></button>)}</div>
+ <div role="log" aria-live="polite" aria-label="پرسش و پاسخ" /></div>
+ <form class="mj-chat-form"><label class="mj-chat-consent"><input type="checkbox" required /> موافقم متن نوشته و پرسشم به سرویس هوش مصنوعی ارسال شود.</label>
+ <div class="mj-chat-compose"><label class="mj-chat-sr" for="mj-chat-input">پرسش دربارهٔ نوشته</label><textarea id="mj-chat-input" required maxLength={2000} rows={2} placeholder="دربارهٔ این نوشته بپرس…" /><button type="submit" aria-label="ارسال پرسش">↑</button></div>
+ <div class="mj-chat-footer"><button type="button" data-reset>گفت‌وگوی تازه</button><span>هر پرسش مستقل است · پاسخ ممکن است خطا داشته باشد</span></div></form>
+ </aside></section>}
+             {isNote && <NoteResources root={root} references={componentData.fileData.frontmatter?.resourceReferences} />}
              {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
               <ol>{startNotes.map((entry, index) => <li key={index}>{entry.slug ? <a class="internal" href={`${root}/${entry.slug}`}>{entry.title}</a> : <span>{entry.title}</span>}</li>)}</ol>
