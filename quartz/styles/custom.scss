@@ -116,13 +116,6 @@ article {
   }
 }
 
-/* Light-mode page background only; preserve layout, components and dark mode. */
-html:not([saved-theme="dark"]),
-:root:not([saved-theme="dark"]) body {
-  background-color: #edf4ef;
-}
-
-
 /* Book-style Persian headings; body text and navigation remain unchanged. */
 @font-face {
   font-family: "MJ Amiri";
