@@ -1,3 +1,4 @@
+import { articleChatScript } from "./articleChatScript"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { pathToRoot } from "../util/path"
 import { settings, siteHref } from "./siteSettings"
@@ -130,3 +131,5 @@ Header.afterDOMLoaded += `
   document.addEventListener('nav', close);
 })();
 `
+
+Header.afterDOMLoaded += articleChatScript

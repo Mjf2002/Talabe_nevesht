@@ -1,3 +1,4 @@
+import { articleChatEndpoint } from "../articleChatConfig"
 import { homeLayoutCSS } from "./homeLayoutCSS"
 import { NoteResources, LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
 import { PageFrame, PageFrameProps } from "./types"
@@ -103,6 +104,17 @@ export const DefaultFrame: PageFrame = {
           <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero"><h1>{settings.header.title}</h1><p>{settings.header.subtitle}</p></section> : <Content {...componentData} />}
+            {isNote && <details data-article-chat data-endpoint={articleChatEndpoint} dir="rtl" style="margin-block:2rem;padding:1.2rem;border:1px solid var(--lightgray);border-radius:16px;background:var(--light)">
+              <summary style="cursor:pointer;font-weight:bold">گفت‌وگو با این نوشته</summary>
+              <p>پاسخ بر اساس همین نوشته است؛ ارجاع‌ها و برداشت مدل را با متن اصلی بررسی کنید. هر پرسش مستقل است.</p>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap">{["ایدهٔ اصلی این نوشته چیست؟", "استدلال نویسنده را خلاصه کن", "کدام پرسش‌ها در متن بی‌پاسخ مانده‌اند؟"].map(q => <button type="button" data-question>{q}</button>)}</div>
+              <div role="log" aria-live="polite" aria-label="پرسش و پاسخ" style="max-height:420px;overflow:auto"></div>
+              <form>
+                <label>پرسش شما<textarea required maxLength={2000} rows={3} style="display:block;box-sizing:border-box;width:100%;font:inherit;margin-block:.8rem" /></label>
+                <label style="display:block"><input type="checkbox" required /> موافقم متن نوشته و پرسشم به سرویس مدل ارسال شود.</label>
+                <button type="submit" style="margin-top:1rem">ارسال پرسش</button>
+              </form>
+            </details>}
             {isNote && <NoteResources root={root} references={componentData.fileData.frontmatter?.resourceReferences} />}
              {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>
