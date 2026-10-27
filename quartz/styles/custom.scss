@@ -121,3 +121,25 @@ html:not([saved-theme="dark"]),
 :root:not([saved-theme="dark"]) body {
   background-color: #edf4ef;
 }
+
+
+/* Book-style Persian headings; body text and navigation remain unchanged. */
+@font-face {
+  font-family: "MJ Amiri";
+  src: url("/static/fonts/amiri-arabic-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+h1, h2, h3, h4, h5, h6,
+.mj-home-cards strong,
+.mj-directory li > a,
+.mj-recent-notes li > a,
+.mj-start-notes li > span,
+.callout .callout-title .callout-title-inner > p,
+.mj-chat-header strong {
+  font-family: "MJ Amiri", "Vazirmatn", Tahoma, sans-serif;
+  font-weight: 700;
+  line-height: 1.85;
+  letter-spacing: normal;
+}
