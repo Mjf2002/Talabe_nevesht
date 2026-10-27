@@ -1,4 +1,5 @@
 import { noteDate } from "../noteDate"
+import { latestDatedNotes } from "../latestDatedNotes"
 import { articleChatEndpoint } from "../articleChatConfig"
 import { homeLayoutCSS } from "./homeLayoutCSS"
 import { NoteResources, LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
@@ -81,8 +82,7 @@ export const DefaultFrame: PageFrame = {
     const wordCount = (readingText(componentData.tree as ReadingNode).match(/\S+/gu) ?? []).length
     const readingMinutes = Math.max(1, Math.ceil(wordCount / settings.reading.wordsPerMinute))
     const pages = publicNotes.filter((file) => currentCategory && String(file.slug).startsWith(`${currentCategory.slug}/`)).sort((a, b) => String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa"))
-    const timestamp = (file: typeof publicNotes[number]) => noteDate(file.frontmatter)?.timestamp ?? 0
-    const recent = [...publicNotes].sort((a, b) => timestamp(b) - timestamp(a) || String(a.frontmatter?.title ?? a.slug).localeCompare(String(b.frontmatter?.title ?? b.slug), "fa")).slice(0, settings.home.recentCount)
+    const recent = latestDatedNotes(publicNotes, settings.home.recentCount)
     const isLibrary = libraryKinds.some(k => normalizedSlug === `resources/${k.path}`)
     const appearance = settings.appearance
     const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:850px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
@@ -153,7 +153,7 @@ export const DefaultFrame: PageFrame = {
           <footer class="mj-site-footer">
             <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
             {settings.footer.links.length > 0 && <div class="mj-contact-links">
-              {settings.footer.links.map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
+              {(settings.footer.links as { label: string; href: string }[]).map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
             </div>}
           </footer>
         </div>
