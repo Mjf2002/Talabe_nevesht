@@ -111,7 +111,7 @@ export const DefaultFrame: PageFrame = {
  <div class="mj-chat-scroll"><div class="mj-chat-welcome"><span class="mj-chat-orb">✦</span><h2>از دل نوشته، بیشتر کشف کن.</h2><p>ایده‌ها را روشن‌تر ببین، استدلال‌ها را بررسی کن و به متن برگرد.</p></div>
  <div class="mj-chat-suggestions">{["ایدهٔ اصلی این نوشته چیست؟", "این نوشته را ساده‌تر توضیح بده", "کدام پرسش‌ها در متن بی‌پاسخ مانده‌اند؟"].map(q => <button type="button" data-question>{q}<span>↗</span></button>)}</div>
  <div role="log" aria-live="polite" aria-label="پرسش و پاسخ" /></div>
- <form class="mj-chat-form"><label class="mj-chat-consent"><input type="checkbox" required /> موافقم متن نوشته و پرسشم به سرویس هوش مصنوعی ارسال شود.</label>
+ <form class="mj-chat-form">
  <div class="mj-chat-compose"><label class="mj-chat-sr" for="mj-chat-input">پرسش دربارهٔ نوشته</label><textarea id="mj-chat-input" required maxLength={2000} rows={2} placeholder="دربارهٔ این نوشته بپرس…" /><button type="submit" aria-label="ارسال پرسش">↑</button></div>
  <div class="mj-chat-footer"><button type="button" data-reset>گفت‌وگوی تازه</button><span>هر پرسش مستقل است · پاسخ ممکن است خطا داشته باشد</span></div></form>
  </aside></section>}

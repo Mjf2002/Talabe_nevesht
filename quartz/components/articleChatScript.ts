@@ -25,7 +25,6 @@ export const articleChatScript = `
    const endpoint=box.dataset.endpoint;
    if(!endpoint) { message('سرویس گفت‌وگو هنوز توسط مدیر سایت تنظیم نشده است.'); return; }
    if(!blocks.length) { message('متن نوشته برای پردازش در دسترس نیست.'); return; }
-   if(!box.querySelector('input[type="checkbox"]').checked) { message('برای ارسال، رضایت انتقال متن به سرویس مدل را تأیید کنید.'); return; }
    busy=true; send.disabled=true; message(question,'user'); input.value='';
    const output=message('در حال بررسی نوشته…'); output.classList.add('mj-chat-loading'); const controller=new AbortController(); const timer=setTimeout(()=>controller.abort(),65000);
    try {
