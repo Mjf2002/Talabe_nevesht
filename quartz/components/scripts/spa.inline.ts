@@ -1,6 +1,9 @@
 import micromorph from "micromorph"
 import { FullSlug, RelativeURL, getFullSlug, normalizeRelativeURLs } from "../../util/path"
 import { fetchCanonical } from "./util"
+import { createPageLoader } from "./pagePrefetch"
+
+const pageLoader = createPageLoader(fetchCanonical)
 
 // adapted from `micromorph`
 // https://github.com/natemoo-re/micromorph
@@ -68,7 +71,7 @@ async function _navigate(url: URL, isBack: boolean = false) {
   isNavigating = true
   startLoading()
   p = p || new DOMParser()
-  const contents = await fetchCanonical(url)
+  const contents = await pageLoader.load(url)
     .then((res) => {
       const contentType = res.headers.get("content-type")
       if (contentType?.startsWith("text/html")) {
@@ -154,6 +157,24 @@ window.spaNavigate = navigate
 
 function createRouter() {
   if (typeof window !== "undefined") {
+    const prefetchIntent = (event: Event) => {
+      const connection = (navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string }
+      }).connection
+      if (connection?.saveData || /(^|-)2g$/.test(connection?.effectiveType ?? "")) return
+      if (!isElement(event.target)) return
+      const a = event.target.closest("a")
+      if (!a || a.hasAttribute("download") || a.target || "routerIgnore" in a.dataset) return
+      const url = new URL(a.href, window.location.href)
+      if (url.origin !== window.location.origin || isSamePage(url) || url.search) return
+      // Do not speculate on PDFs, images, files, or API endpoints.
+      if (!/^https?:$/.test(url.protocol) || /\.[^/]+$/.test(url.pathname) && !/\.html$/.test(url.pathname)) return
+      if (/\/(?:api|static|resources)(?:\/|$)/.test(url.pathname)) return
+      pageLoader.prefetch(url)
+    }
+    window.addEventListener("pointerover", prefetchIntent, { passive: true })
+    window.addEventListener("focusin", prefetchIntent)
+    window.addEventListener("touchstart", prefetchIntent, { passive: true })
     window.addEventListener("click", async (event) => {
       const { url } = getOpts(event) ?? {}
       // dont hijack behaviour, just let browser act normally
