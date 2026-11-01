@@ -5,16 +5,16 @@
   font-display: swap;
 }
 :root {
-  --light: #f5f1e9; --lightgray: #d6d0c5; --gray: #69645e;
-  --darkgray: #393733; --dark: #201f1c; --secondary: #2455a0;
-  --tertiary: #655b4b; --highlight: #2455a00a; --textHighlight: #e0ca9255;
+  --light: #faf8f2; --lightgray: #dedfd5; --gray: #747c70;
+  --darkgray: #454e43; --dark: #203b30; --secondary: #37694d;
+  --tertiary: #967449; --highlight: #37694d0c; --textHighlight: #dcc78d55;
   --bodyFont: "Vazirmatn", Tahoma, sans-serif;
   --headerFont: "Vazirmatn", Tahoma, sans-serif;
 }
 :root[saved-theme="dark"] {
-  --light: #1c1c1b; --lightgray: #45433e; --gray: #b5afa5;
-  --darkgray: #ded8ce; --dark: #f5f1e9; --secondary: #9ebef2;
-  --tertiary: #cbbc9e; --highlight: #9ebef20d; --textHighlight: #dcc78d33;
+  --light: #17201b; --lightgray: #35433a; --gray: #a2b0a4;
+  --darkgray: #d3dbd1; --dark: #edf3e9; --secondary: #a4d0ac;
+  --tertiary: #d9b98e; --highlight: #a4d0ac0d; --textHighlight: #dcc78d33;
 }
 * { box-sizing: border-box; }
 html { scroll-padding-top: 24px; }
