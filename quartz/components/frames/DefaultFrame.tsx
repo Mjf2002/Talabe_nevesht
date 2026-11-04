@@ -2,7 +2,7 @@ import { noteDate } from "../noteDate"
 import { latestDatedNotes } from "../latestDatedNotes"
 import { articleChatEndpoint } from "../articleChatConfig"
 import { homeLayoutCSS } from "./homeLayoutCSS"
-import { NoteResources, LibraryMenu, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
+import { NoteResources, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
 import { pathToRoot, slugifyFilePath, FilePath } from "../../util/path"
@@ -85,7 +85,7 @@ export const DefaultFrame: PageFrame = {
     const recent = latestDatedNotes(publicNotes, settings.home.recentCount)
     const isLibrary = libraryKinds.some(k => normalizedSlug === `resources/${k.path}`)
     const appearance = settings.appearance
-    const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:850px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
+    const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:1200px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
       <>
         {slug === "index" && <style dangerouslySetInnerHTML={{ __html: homeLayoutCSS }} />}
@@ -97,9 +97,8 @@ export const DefaultFrame: PageFrame = {
             <div class="popover-hint">{!isNote && !currentCategory && !isLibrary && beforeBody.map((Component) => <Component {...componentData} />)}</div>
           </div>
           <LibraryStyles />
-          <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
-            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero mj-poster-hero" aria-label="من جمعی؛ یادداشت‌های یک طلبه و پژوهشگر علوم انسانی"><img src={`${root}/static/manejamei-poster.webp`} alt="منِ جمعی — یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1536" height="1024" fetchPriority="high" /></section> : isNote ? <section class="mj-note-sheet" aria-labelledby="mj-note-title">
+            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? null : isNote ? <section class="mj-note-sheet" aria-labelledby="mj-note-title">
               <header class="mj-note-heading">
                 <h1 id="mj-note-title" class="mj-editorial-title">{String(componentData.fileData.frontmatter?.title ?? "یادداشت")}</h1>
                 {registeredDate && <p class="mj-note-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4" /><path d="M7 3v4m10-4v4M3 11h18m-12 5h6" /></svg><span>تاریخ ثبت: <time dateTime={registeredDate.iso}>{registeredDate.label}</time></span></p>}

@@ -16,7 +16,7 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
   const slug = String(fileData.slug ?? "index").replace(/\/index$/, "")
   const links = [...settings.header.links.filter(link => !link.href.startsWith("/resources")), { label: "منابع", href: "/resources/books" }]
   return (
-    <header class="mj-site-header mj-header-v9" dir="rtl">
+    <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-top-ribbon" aria-hidden="true"><span /></div>
       <div class="mj-heading-row">
@@ -35,103 +35,7 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
   )
 }
 
-Header.css = `
-/* Keep the ribbon, brand row and navigation in separate layout tracks. */
-.center header.mj-header-v9 {
-  display: grid !important; grid-template-columns: minmax(0, 1fr);
-  align-items: stretch; gap: 0; width: 100%; min-width: 0;
-  padding: 16px 0 0; margin: 0 0 24px; position: relative;
-}
-.center .mj-header-v9 > .mj-top-ribbon {
-  position: static; width: 100%; height: 6px; margin: 0 0 22px;
-  grid-column: 1; border-radius: 0 0 6px 6px;
-}
-.center .mj-header-v9 > .mj-heading-row {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto;
-  direction: rtl; align-items: center; gap: 32px;
-  width: 100%; margin: 0; padding: 0 0 22px;
-}
-.center .mj-header-v9 .mj-brand-seal {
-  display: block; width: 300px; max-width: 100%; justify-self: start;
-  margin: 0; padding: 0; line-height: 0;
-}
-.center .mj-header-v9 .mj-brand-seal img {
-  display: block; width: 100%; height: auto; max-width: 100%;
-  object-fit: contain; border-radius: 0; margin: 0;
-}
-.center .mj-header-v9 .mj-heading-row > .mj-tools {
-  position: static; display: flex; flex-flow: row nowrap;
-  align-items: center; justify-content: flex-end; align-self: center;
-  width: auto; margin: 0; padding: 0; gap: 10px;
-}
-.center .mj-header-v9 .mj-tools .flex-component {
-  position: static; display: flex; align-items: center;
-  flex-flow: row nowrap; gap: 10px !important; margin: 0;
-}
-.center .mj-header-v9 .mj-tools .search { width: 180px; flex: 0 0 180px; }
-.center .mj-header-v9 .search > .search-button {
-  position: relative; display: flex; flex-direction: row;
-  align-items: center; justify-content: flex-start; gap: 10px;
-  width: 180px; height: 48px; min-height: 48px;
-  padding: 0 14px; margin: 0; border: 1px solid #b5a476;
-  border-radius: 14px; background: transparent;
-}
-.center .mj-header-v9 .search > .search-button > svg {
-  position: static; inset: auto; transform: none;
-  flex: 0 0 20px; width: 20px; height: 20px; margin: 0;
-}
-.center .mj-header-v9 .search > .search-button > p { display: none; }
-.center .mj-header-v9 .search > .search-button::after {
-  content: 'جست‌وجو…'; font-size: 13px; line-height: 1.5;
-  font-weight: 400; color: var(--darkgray);
-}
-.center .mj-header-v9 .mj-tools button.darkmode {
-  width: 40px; min-width: 40px; height: 40px; border: 0;
-  background: transparent; margin: 0;
-}
-.center .mj-header-v9 .mj-header-languages summary {
-  width: 48px; height: 48px; border-radius: 14px;
-}
-@media (max-width: 700px) {
-  .center .mj-header-v9 > .mj-heading-row {
-    grid-template-columns: minmax(0, 1fr); gap: 18px;
-    justify-items: center; padding-bottom: 16px;
-  }
-  .center .mj-header-v9 .mj-brand-seal { justify-self: center; width: 280px; }
-  .center .mj-header-v9 .mj-heading-row > .mj-tools { justify-self: center; margin: 0; }
-  .center .mj-header-v9 > .mj-top-ribbon { margin-bottom: 18px; }
-}
-@media (max-width: 360px) {
-  .center .mj-header-v9 .mj-tools .search { width: 150px; flex-basis: 150px; }
-  .center .mj-header-v9 .search > .search-button { width: 150px; }
-}
-
-.center .mj-site-header .mj-navigation { display: flex; justify-content: center; flex-wrap: wrap; width: 100%; gap: .6rem 1.6rem; margin-inline: auto; }
-.center #mj-main.mj-home .mj-home-columns { display: block; }
-.center #mj-main.mj-home .mj-home-paths { display: none; }
-.center #mj-main.mj-home .mj-topic-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
-.center #mj-main.mj-home .mj-start-notes { margin-block: 2rem; }
-.center #mj-main.mj-home .mj-home-topics > h2 { text-align: center; margin-bottom: 1.2rem; }
-.center #mj-main.mj-home .mj-hero-actions { display: none; }
-@media (max-width: 600px) { .center #mj-main.mj-home .mj-topic-cards { grid-template-columns: 1fr; } }
-
-.center { --secondary: var(--mj-admin-accent, #4f6d5c); --tertiary: var(--mj-admin-accent, #4f6d5c); }
-.center #mj-main, .center .page-header, .center .mj-site-footer { width: 100%; max-width: var(--mj-admin-width, 850px); margin-inline: auto; }
-.center #mj-main, .center #mj-main article { font-size: var(--mj-admin-font-size, 17px); }
-.center #mj-main article p { font-size: inherit; }
-.center #mj-main article, .center #mj-main article p, .center #mj-main article li { line-height: var(--mj-admin-line-height, 1.95); }
-.center #mj-main .mj-home-cards a { border-radius: var(--mj-admin-radius, 18px); }
-.center .mj-navigation a[aria-current="page"], .center #mj-main a:not(.tag-link) { color: var(--mj-admin-accent, #4f6d5c); }
-.center .mj-site-footer { display: flex; direction: rtl; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; }
-.center .mj-site-footer > .mj-footer-name { flex: 0 0 auto; text-align: right; }
-.center .mj-site-footer > .mj-footer-tagline { margin-inline-start: auto; text-align: left; min-width: 0; overflow-wrap: anywhere; }
-.center .mj-site-footer > .mj-contact-links { flex: 0 0 100%; }
-.center .mj-contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
-.center .mj-announcement { padding: .7rem 1rem; margin-top: 1rem; border-inline-start: 3px solid var(--mj-admin-accent); background: var(--lightgray); border-radius: 6px; }
-.center .mj-recent-notes { margin-top: 2.5rem; }
-.center .mj-recent-notes ul { padding-inline-start: 1.4rem; }
-.center .mj-recent-notes li { margin-block: .7rem; }
-`
+Header.css = ``
 
 Header.afterDOMLoaded = `
 (() => {
