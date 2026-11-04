@@ -2,6 +2,7 @@ import { readingTocScript } from "./readingTocScript"
 import { articleChatScript } from "./articleChatScript"
 import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } from "./types"
 import { pathToRoot } from "../util/path"
+import { enabledLanguages, languageLabels } from "./languages"
 import { settings, siteHref } from "./siteSettings"
 
 const dockIcon = (href: string) => {
@@ -18,9 +19,10 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
   return (
     <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
+      <div class="mj-top-ribbon" aria-hidden="true"><span /></div>
       <div class="mj-heading-row">
-        <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><img src={`${root}/static/manejamei-seal.webp`} alt="نشان من جمعی" width="64" height="64" /></a>
-        <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
+        <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><img src={`${root}/static/manejamei-header-logo.webp`} alt="من جمعی؛ یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1500" height="550" /></a>
+        <div class="mj-tools" aria-label="ابزارهای سایت">{tools}<details class="mj-header-languages"><summary aria-label="انتخاب زبان"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 7h14M5 17h14"/></svg></summary><div>{enabledLanguages.map((lang: string) => <a href={lang === "fa" ? `${root}/` : `${root}/${lang}/`} lang={lang}>{languageLabels[lang] || lang}</a>)}</div></details></div>
       </div>
       {children}
       <nav class="mj-mobile-dock" aria-label="دسترسی سریع">

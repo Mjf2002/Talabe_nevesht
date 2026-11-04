@@ -224,3 +224,28 @@ body .mj-back-top { left:18px; right:auto; }
  .center.mj-note-page .mj-note-sheet > article { padding:28px 18px 0; }
  body .mj-back-top { left:16px; right:auto; bottom:calc(110px + env(safe-area-inset-bottom)); }
 }
+
+/* Header revision 8: supplied wordmark and restrained gold/navy ribbon */
+.center .mj-site-header { position:relative; }
+.center .mj-top-ribbon { height:9px; margin:0 auto 22px; width:84%; border-radius:0 0 9px 9px; background:linear-gradient(90deg,#b6a578,#e4d4a3 24%,#ab8a37 50%,#e4d4a3 76%,#b6a578); overflow:hidden; }
+.center .mj-top-ribbon span { display:block; height:3px; background:linear-gradient(90deg,transparent,#071d42,transparent); margin-top:2px; }
+.center .mj-brand-seal { display:block; width:clamp(210px,32vw,360px); max-width:55%; }
+.center .mj-brand-seal img { display:block; width:100%; height:auto; border-radius:0; object-fit:contain; margin:0; }
+.center .mj-tools { color:#b6a578; }
+.center .mj-tools .search { width:180px; flex:0 1 180px; }
+.center .mj-tools .search > .search-button { width:100%; min-height:50px; height:50px; border:1px solid #b6a578; border-radius:16px; background:transparent; color:#b6a578; display:flex; align-items:center; justify-content:center; gap:10px; }
+.center .mj-tools .search > .search-button > p { display:block; font-size:.85rem; color:var(--darkgray); }
+.center .mj-tools .search > .search-button > svg { stroke:#b6a578; }
+.mj-header-languages { position:relative; flex:none; }
+.mj-header-languages summary { width:48px; height:48px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid #b6a578; border-radius:15px; list-style:none; color:#b6a578; }
+.mj-header-languages summary::-webkit-details-marker { display:none; }
+.mj-header-languages > div { position:absolute; top:58px; left:0; z-index:100; min-width:120px; padding:8px; border:1px solid #b6a578; border-radius:12px; background:var(--light); box-shadow:0 8px 24px #0002; }
+.mj-header-languages a { display:block; padding:8px 12px; }
+.mj-header-languages summary:focus-visible { outline:2px solid #b6a578; outline-offset:4px; }
+@media(max-width:600px) {
+ .center .mj-heading-row { flex-wrap:wrap; justify-content:center; }
+ .center .mj-brand-seal { width:290px; max-width:90%; }
+ .center .mj-heading-row .mj-tools { margin-inline:auto; justify-content:center; }
+ .center .mj-tools .search { width:165px; flex-basis:165px; }
+ .center .mj-top-ribbon { margin-bottom:16px; height:7px; width:92%; }
+}
