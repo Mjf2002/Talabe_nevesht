@@ -1,0 +1,115 @@
+/* Step 2: supplied transparent artwork; desktop remains unchanged. */
+.mj-site-header .mj-mobile-brand,
+.mj-site-header .mj-mobile-headline { display: none; }
+@media (max-width: 800px) {
+  header.mj-site-header .mj-heading-row {
+    direction: rtl;
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) 78px;
+    column-gap: 10px;
+    row-gap: 8px;
+    align-items: center;
+  }
+  header.mj-site-header .mj-brand-seal { display: none; }
+  header.mj-site-header .mj-mobile-brand {
+    display: block;
+    grid-column: 1;
+    grid-row: 1;
+    width: 48px;
+    line-height: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  header.mj-site-header .mj-mobile-brand img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  header.mj-site-header .mj-mobile-headline {
+    display: flex;
+    grid-column: 2;
+    grid-row: 1;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 56px;
+    line-height: 0;
+    background: transparent;
+  }
+  header.mj-site-header .mj-mobile-headline img {
+    display: block;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  :root[saved-theme="dark"] header.mj-site-header .mj-mobile-headline img {
+    filter: brightness(0) invert(1);
+  }
+  header.mj-site-header .mj-heading-row > .mj-tools {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 78px;
+    min-width: 0;
+    gap: 6px !important;
+    direction: rtl;
+  }
+  header.mj-site-header .mj-tools .flex-component {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+    gap: 6px !important;
+    direction: rtl;
+  }
+  header.mj-site-header .mj-tools .search {
+    order: 0;
+    width: 36px;
+    min-width: 36px;
+    flex: 0 0 36px;
+  }
+  header.mj-site-header .mj-tools .search > .search-button,
+  header.mj-site-header .mj-tools button.darkmode {
+    display: grid;
+    place-items: center;
+    position: relative;
+    width: 36px;
+    min-width: 36px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--mj-gold);
+    border-radius: 12px;
+    background: transparent;
+    color: var(--secondary);
+    cursor: pointer;
+  }
+  header.mj-site-header .mj-tools button.darkmode { order: 1; flex: 0 0 36px; }
+  header.mj-site-header .mj-tools .search > .search-button > p { display: none; }
+  header.mj-site-header .mj-tools .search > .search-button > svg,
+  header.mj-site-header .mj-tools button.darkmode > svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 19px;
+    height: 19px;
+    margin: 0;
+    transform: translate(-50%, -50%);
+  }
+  /* Keep the existing menu below the new artwork row. */
+  header.mj-site-header .mj-primary-nav { grid-column: 1 / -1; grid-row: 2; }
+  header.mj-site-header :is(.mj-mobile-brand, .mj-mobile-headline, .search-button, button.darkmode):focus-visible {
+    outline: 2px solid var(--secondary);
+    outline-offset: 3px;
+  }
+}

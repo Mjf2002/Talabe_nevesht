@@ -21,6 +21,8 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
       <div class="mj-top-ribbon" aria-hidden="true"><span /></div>
       <div class="mj-heading-row">
         <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><img src={`${root}/static/manejamei-header-logo.webp`} alt="من جمعی؛ یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1500" height="550" /></a>
+        <a class="mj-mobile-brand" href={`${root}/`} aria-label="من جمعی؛ خانه"><img src={`${root}/static/man-jamei-logo.webp`} alt="من جمعی" width="364" height="366" /></a>
+        <a class="mj-mobile-headline" href={`${root}/`} aria-label="یادداشت‌های یک طلبه و پژوهشگر علوم انسانی"><img src={`${root}/static/manejamei-headline.webp`} alt="یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1087" height="300" /></a>
         <nav class="mj-mobile-dock mj-primary-nav" aria-label="ناوبری اصلی">
           {links.map((link) => {
             const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
