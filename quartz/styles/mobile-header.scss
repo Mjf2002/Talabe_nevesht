@@ -5,7 +5,7 @@
   header.mj-site-header .mj-heading-row {
     direction: rtl;
     display: grid;
-    grid-template-columns: 48px minmax(0, 1fr) 78px;
+    grid-template-columns: 56px minmax(0, 1fr) 78px;
     column-gap: 10px;
     row-gap: 8px;
     align-items: center;
@@ -15,7 +15,7 @@
     display: block;
     grid-column: 1;
     grid-row: 1;
-    width: 48px;
+    width: 56px;
     line-height: 0;
     background: transparent;
     border: 0;
@@ -42,8 +42,8 @@
   }
   header.mj-site-header .mj-mobile-headline img {
     display: block;
-    width: 100%;
-    max-width: 300px;
+    width: 94%;
+    max-width: 280px;
     height: auto;
     margin: 0;
     border-radius: 0;
