@@ -203,11 +203,12 @@ a:focus-visible,button:focus-visible { outline:3px solid #b5a476; outline-offset
 
 /* Article-only editorial layout; category and resource pages remain unchanged. */
 @font-face { font-family:"MJ Editorial"; src:url("./static/fonts/amiri-arabic-700.woff2") format("woff2"); font-style:normal; font-weight:700; font-display:swap; }
-.center.mj-note-page .popover-hint { position:relative; z-index:1; text-align:center; padding-top:38px; margin-bottom:0; }
+.center.mj-note-page .page-header { position:relative; z-index:2; overflow:visible; }
+.center.mj-note-page .popover-hint { position:relative; z-index:1; text-align:center; padding-top:38px; margin-bottom:0; overflow:visible; }
 .center.mj-note-page .popover-hint .mj-editorial-title { box-sizing:border-box; width:fit-content; max-width:88%; margin:0 auto; padding:22px 36px 28px; border-radius:18px; background:var(--mj-gold); color:#191919; font-family:"MJ Editorial","Vazirmatn",Tahoma,serif; font-weight:700; font-size:clamp(1.8rem,3vw,2.35rem); line-height:1.85; overflow-wrap:anywhere; }
 .center.mj-note-page .popover-hint .mj-note-date { position:absolute; top:calc(100% - 14px); left:50%; transform:translateX(-50%); justify-content:center; width:max-content; max-width:94%; box-sizing:border-box; margin:0 !important; padding:5px 14px; border:2px solid var(--light); border-radius:16px; background:var(--mj-gold); color:#191919 !important; }
 .center.mj-note-page .mj-reading-time { position:absolute; top:calc(100% + 32px); inset-inline:0; margin:0 auto; font-size:.78rem; color:var(--gray); line-height:1.8; }
-.center.mj-note-page #mj-main.mj-article { margin-top:-30px; padding-top:0; }
+.center.mj-note-page #mj-main.mj-article { position:relative; z-index:1; margin-top:-30px; padding-top:0; }
 .center.mj-note-page #mj-main.mj-article > article { box-sizing:border-box; padding:116px 34px 38px; background:var(--light); border:1px solid #b5a47630; border-radius:24px; box-shadow:0 3px 16px #00000004; overflow-wrap:anywhere; }
 :root[saved-theme="light"] .center.mj-note-page #mj-main.mj-article > article { background:#fff; }
 .center.mj-note-page #mj-main.mj-article > article p { line-height:2.25; }
