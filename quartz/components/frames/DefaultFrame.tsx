@@ -88,7 +88,7 @@ export const DefaultFrame: PageFrame = {
     const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:1200px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
       <>
-        <div class={isNote ? "center mj-note-page" : "center"} style={style}>
+        <div class={isNote ? "center mj-note-page" : "center"} style={style} dir="rtl">
           <div class="page-header">
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
               {header.map((Component) => <Component {...componentData} />)}
@@ -97,7 +97,7 @@ export const DefaultFrame: PageFrame = {
           </div>
           <LibraryStyles />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
-            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? null : isNote ? <section class="mj-note-sheet" aria-labelledby="mj-note-title">
+            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article class="mj-category-heading"><span class="mj-section-kicker">فهرست موضوعی یادداشت‌ها</span><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}<span class="mj-category-total">{pages.length.toLocaleString("fa-IR")} یادداشت برای مطالعه</span></article> : slug === "index" ? null : isNote ? <section class="mj-note-sheet" aria-labelledby="mj-note-title">
               <NoteHeading title={String(componentData.fileData.frontmatter?.title ?? "یادداشت")} registeredDate={registeredDate} readingMinutes={readingMinutes} />
               <Content {...componentData} />
             </section> : <Content {...componentData} />}
@@ -129,7 +129,10 @@ export const DefaultFrame: PageFrame = {
               {parentCategory && <p><a class="internal" href={`${root}/${parentCategory.slug}/`}>بازگشت به {parentCategory.title}</a></p>}
               {children.length > 0 && <section><h2>زیرموضوع‌ها</h2><nav class="mj-home-cards mj-topic-cards" aria-label="زیرموضوع‌ها">{children.map((category) => <a key={category.slug} class="internal" href={`${root}/${category.slug}/`}><strong>{category.title}</strong><span>{category.description}</span></a>)}</nav></section>}
               <p class="mj-count">{pages.length.toLocaleString("fa-IR")} یادداشت</p>
-              {pages.length ? <ul>{pages.map((file) => <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}>{String(file.frontmatter?.title ?? file.slug)}</a></li>)}</ul> : <p>هنوز یادداشتی منتشر نشده است.</p>}
+              {pages.length ? <ul>{pages.map((file) => {
+                const date = noteDate(file.frontmatter)
+                return <li key={String(file.slug)}><a class="internal" href={`${root}/${file.slug}`}><span>{String(file.frontmatter?.title ?? file.slug)}</span>{date && <time dateTime={date.iso}>{date.label}</time>}<span class="mj-row-arrow" aria-hidden="true">←</span></a></li>
+              })}</ul> : <p class="mj-directory-empty">هنوز یادداشتی منتشر نشده است.</p>}
             </section>}
             {isNote && recommended.length > 0 && <section class="mj-recent-notes" aria-label="در ادامه بخوانید">
               <h2>در ادامه بخوانید</h2>

@@ -21,16 +21,16 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
       <div class="mj-top-ribbon" aria-hidden="true"><span /></div>
       <div class="mj-heading-row">
         <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><img src={`${root}/static/manejamei-header-logo.webp`} alt="من جمعی؛ یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1500" height="550" /></a>
+        <nav class="mj-mobile-dock mj-primary-nav" aria-label="ناوبری اصلی">
+          {links.map((link) => {
+            const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
+            const active = slug === target || (target === "notes" && slug.startsWith("notes/")) || (target.startsWith("resources/") && slug.startsWith("resources/"))
+            return <a key={link.href} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}>{dockIcon(link.href)}<small>{link.label}</small></a>
+          })}
+        </nav>
         <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
       </div>
       {children}
-      <nav class="mj-mobile-dock" aria-label="دسترسی سریع">
-        {links.map((link) => {
-          const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
-          const active = slug === target || (target === "notes" && slug.startsWith("notes/")) || (target.startsWith("resources/") && slug.startsWith("resources/"))
-          return <a key={link.href} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}>{dockIcon(link.href)}<small>{link.label}</small></a>
-        })}
-      </nav>
     </header>
   )
 }
