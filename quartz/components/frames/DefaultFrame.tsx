@@ -1,7 +1,7 @@
 import { noteDate } from "../noteDate"
 import { latestDatedNotes } from "../latestDatedNotes"
-import { articleChatEndpoint } from "../articleChatConfig"
-import { homeLayoutCSS } from "./homeLayoutCSS"
+import { ArticleChat } from "./ArticleChat"
+import { NoteHeading } from "./NoteHeading"
 import { NoteResources, LibraryPage, LibraryStyles, libraryKinds } from "./ResourceLibrary"
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
@@ -67,7 +67,7 @@ export const DefaultFrame: PageFrame = {
       })
     }
     const startSettings = settings.home as typeof settings.home & { startTitle?: string; startEnabled?: boolean; startNotes?: { title: string; slug: string }[] }
-    const startDefaults = [{ title: "چرا من جمعی؟", slug: "" }, { title: "چیستی فلسفه علوم اجتماعی", slug: "" }, { title: "عنوان سوم", slug: "" }]
+    const startDefaults: { title: string; slug: string }[] = []
     const normalizeTitle = (s: string) => s.replace(/[\s‌َُِّْ؟?]/gu, "").replace(/ي/g, "ی").replace(/ك/g, "ک")
     const startNotes = (Array.isArray(startSettings.startNotes) ? startSettings.startNotes : startDefaults).flatMap((entry) => {
       if (!entry || typeof entry.title !== "string" || typeof entry.slug !== "string") return []
@@ -88,7 +88,6 @@ export const DefaultFrame: PageFrame = {
     const style = `--mj-admin-accent:${appearance.accent};--mj-admin-width:1200px;--mj-admin-font-size:${appearance.fontSize}px;--mj-admin-line-height:1.95;--mj-admin-radius:${appearance.cardRadius}px;`
     return (
       <>
-        {slug === "index" && <style dangerouslySetInnerHTML={{ __html: homeLayoutCSS }} />}
         <div class={isNote ? "center mj-note-page" : "center"} style={style}>
           <div class="page-header">
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
@@ -99,24 +98,10 @@ export const DefaultFrame: PageFrame = {
           <LibraryStyles />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
             {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? null : isNote ? <section class="mj-note-sheet" aria-labelledby="mj-note-title">
-              <header class="mj-note-heading">
-                <h1 id="mj-note-title" class="mj-editorial-title">{String(componentData.fileData.frontmatter?.title ?? "یادداشت")}</h1>
-                {registeredDate && <p class="mj-note-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4" /><path d="M7 3v4m10-4v4M3 11h18m-12 5h6" /></svg><span>تاریخ ثبت: <time dateTime={registeredDate.iso}>{registeredDate.label}</time></span></p>}
-                <p class="mj-reading-time">حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>
-              </header>
+              <NoteHeading title={String(componentData.fileData.frontmatter?.title ?? "یادداشت")} registeredDate={registeredDate} readingMinutes={readingMinutes} />
               <Content {...componentData} />
             </section> : <Content {...componentData} />}
-            {isNote && <section data-article-chat data-endpoint={articleChatEndpoint} dir="rtl">
- <button type="button" class="mj-chat-launch" aria-expanded="false">✦ گفت‌وگو با نوشته <span>پرسش، کشف، فهم بهتر</span></button>
- <aside class="mj-chat-panel" hidden aria-label="دستیار مطالعه">
- <header class="mj-chat-header"><div><strong>✦ دستیار مطالعه</strong><small>همراه شما برای فهم این نوشته</small></div><button type="button" data-close aria-label="بستن گفت‌وگو">✕</button></header>
- <div class="mj-chat-scroll"><div class="mj-chat-welcome"><span class="mj-chat-orb">✦</span><h2>از دل نوشته، بیشتر کشف کن.</h2><p>ایده‌ها را روشن‌تر ببین، استدلال‌ها را بررسی کن و به متن برگرد.</p></div>
- <div class="mj-chat-suggestions">{["ایدهٔ اصلی این نوشته چیست؟", "این نوشته را ساده‌تر توضیح بده", "کدام پرسش‌ها در متن بی‌پاسخ مانده‌اند؟"].map(q => <button type="button" data-question>{q}<span>↗</span></button>)}</div>
- <div role="log" aria-live="polite" aria-label="پرسش و پاسخ" /></div>
- <form class="mj-chat-form">
- <div class="mj-chat-compose"><label class="mj-chat-sr" for="mj-chat-input">پرسش دربارهٔ نوشته</label><textarea id="mj-chat-input" required maxLength={2000} rows={2} placeholder="دربارهٔ این نوشته بپرس…" /><button type="submit" aria-label="ارسال پرسش">↑</button></div>
- <div class="mj-chat-footer"><button type="button" data-reset>گفت‌وگوی تازه</button><span>هر پرسش مستقل است · پاسخ ممکن است خطا داشته باشد</span></div></form>
- </aside></section>}
+            {isNote && <ArticleChat />}
              {isNote && <NoteResources root={root} references={componentData.fileData.frontmatter?.resourceReferences} />}
              {slug === "index" && startSettings.startEnabled !== false && <section class="mj-recent-notes mj-start-notes" aria-label={startSettings.startTitle || "برای شروع"}>
               <h2>{startSettings.startTitle || "برای شروع"}</h2>

@@ -18,12 +18,12 @@
 }
 * { box-sizing: border-box; }
 html { scroll-padding-top: 24px; }
-body { direction: rtl; font-family: var(--bodyFont); line-height: 1.95; }
+body { direction: inherit; font-family: var(--bodyFont); line-height: 1.95; }
 a, button, input { font-family: inherit; }
 h1,h2,h3,h4,h5,h6 { font-family: var(--headerFont); line-height: 1.65; }
 a:focus-visible, button:focus-visible, input:focus-visible { outline: 2px solid var(--secondary); outline-offset: 5px; }
 .page { width: 100%; max-width: 1080px; padding-inline: 40px; margin-inline: auto; }
-.page > #quartz-body { display: block; padding: 0; direction: rtl; }
+.page > #quartz-body { display: block; padding: 0; direction: inherit; }
 .page > #quartz-body .center { width: 100%; min-width: 0; margin: 0; }
 .page > #quartz-body .page-header { width: 100%; margin: 0; padding: 0; }
 .mj-site-header { display: block; margin: 0 0 48px; padding-top: 36px; }

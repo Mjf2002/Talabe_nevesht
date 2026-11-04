@@ -35,8 +35,19 @@ jobs:
       - name: Install Quartz plugins
         run: npx quartz plugin install
 
+      - name: Test panel and language preparation
+        run: node --test mobile-panel/tests.mjs tools/prepare-languages.test.mjs article-chat/server.test.mjs
+
+      - name: Type check
+        run: npx tsc --noEmit
+
+      - name: Prepare published languages
+        run: node tools/prepare-languages.mjs
+        env:
+          TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
+
       - name: Build site
-        run: npx quartz build
+        run: npx quartz build -d .i18n-build/content
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3

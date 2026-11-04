@@ -1,0 +1,13 @@
+type NoteHeadingProps = {
+  title: string
+  registeredDate: { iso: string; label: string } | undefined
+  readingMinutes: number
+}
+
+export function NoteHeading({ title, registeredDate, readingMinutes }: NoteHeadingProps) {
+  return <header class="mj-note-heading">
+    <h1 id="mj-note-title" class="mj-editorial-title">{title}</h1>
+    {registeredDate && <p class="mj-note-date"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4" /><path d="M7 3v4m10-4v4M3 11h18m-12 5h6" /></svg><span>تاریخ ثبت: <time dateTime={registeredDate.iso}>{registeredDate.label}</time></span></p>}
+    <p class="mj-reading-time">حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>
+  </header>
+}

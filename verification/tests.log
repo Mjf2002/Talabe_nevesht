@@ -1,0 +1,25 @@
+✔ reject unapproved origins before upstream (106.21453ms)
+✔ validate input without consuming upstream quota (32.232499ms)
+✔ cap output and daily upstream requests (29.050096ms)
+✔ enforce per-address limit (41.082279ms)
+✔ invalid configuration fails closed (1.231084ms)
+✔ allowed paths reject traversal and secret files (2.410961ms)
+✔ encrypted sessions reject alteration and expiry (32.545243ms)
+✔ unauthenticated API denied; page redirects (63.494075ms)
+✔ CSRF and origin enforced (6.679306ms)
+✔ authenticated session exposes no credentials (4.442418ms)
+✔ atomic commit uses non-force ref update and validates stale base (9.831626ms)
+✔ frontmatter and code-safe links (7.004751ms)
+✔ manual home activates language, originals unchanged, repeat build safe (808.015372ms)
+✔ missing home hides language (411.360801ms)
+✔ missing API key fails clearly (371.421765ms)
+✔ draft source and manual draft are not translated (940.888006ms)
+✔ unmarked build folder is never removed (534.355715ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4464.690246

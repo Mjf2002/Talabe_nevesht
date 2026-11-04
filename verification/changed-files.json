@@ -1,0 +1,67 @@
+[
+  {
+    "path": "CHANGELOG-FIXES-FA.md",
+    "sha256": "b6709d93f6f742f03d18ecabd0bdbf50b4776d9f1f74c2b64da3f27df9530eb7",
+    "status": "added"
+  },
+  {
+    "path": "quartz.config.default.yaml",
+    "sha256": "7e1a967ec8966b7d79d637770b59786bc34987d956d508f0afdeb212d81f24b7",
+    "status": "modified"
+  },
+  {
+    "path": ".github/workflows/deploy.yml",
+    "sha256": "ac00bc3762eeb2d228531e38c23cd98e9c70f505d49f349b5dc3349496bbf852",
+    "status": "modified"
+  },
+  {
+    "path": "article-chat/.env.example",
+    "sha256": "dd3516eaf538de87f21cfe4ad1d46fb826e1b7b6825b1b936cf068cd79cca873",
+    "status": "modified"
+  },
+  {
+    "path": "article-chat/server.mjs",
+    "sha256": "b64ef6bb31b863782af29938bbec02a896fce17151566871337e07dad043b9fe",
+    "status": "modified"
+  },
+  {
+    "path": "article-chat/server.test.mjs",
+    "sha256": "649f7756b43881e2998ea246aba49bdda4db4ed2632e33136c22ce23556b2248",
+    "status": "added"
+  },
+  {
+    "path": "quartz/site-settings.json",
+    "sha256": "440d4e80d0be5dcc47efb481342a134e330aee6dd79b7d2be3aa4d8d70beda4e",
+    "status": "modified"
+  },
+  {
+    "path": "quartz/components/renderPage.tsx",
+    "sha256": "4431d9fc76e584050e327f5af7b37b98c8d1ae132495a97127587d62448b34c5",
+    "status": "modified"
+  },
+  {
+    "path": "quartz/components/frames/ArticleChat.tsx",
+    "sha256": "5532b4733c5d1c84248ec138ced45405103d71bc9e485cd1f6c3e7ab1df15377",
+    "status": "added"
+  },
+  {
+    "path": "quartz/components/frames/DefaultFrame.tsx",
+    "sha256": "8a4fa801a6bfb2e553487cf93b729240c9901b6ed88afc83e8494da913424952",
+    "status": "modified"
+  },
+  {
+    "path": "quartz/components/frames/NoteHeading.tsx",
+    "sha256": "35ee25e66c329ec7ebc4a44e930e69072bd3c9766f2e81f5197de8d49b76b6eb",
+    "status": "added"
+  },
+  {
+    "path": "quartz/styles/custom.scss",
+    "sha256": "1d79657cacfce562c2cabfca6e345d9aabae81e9d6e79e6782d15c79eb390caa",
+    "status": "modified"
+  },
+  {
+    "path": "verification/tests.log",
+    "sha256": "c65bdb55b6e8a2ee77b64ac0145fdb6ceb8d73b83d64dc04001f29d1a70bc0ff",
+    "status": "added"
+  }
+]
