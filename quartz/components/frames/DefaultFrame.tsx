@@ -102,7 +102,7 @@ export const DefaultFrame: PageFrame = {
           <LibraryStyles />
           <LibraryMenu root={root} />
           <main id="mj-main" class={slug === "index" ? "mj-home" : "mj-article"} tabIndex={-1}>
-            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero"><h1>{settings.header.title}</h1><p>{settings.header.subtitle}</p></section> : <Content {...componentData} />}
+            {isLibrary ? <LibraryPage root={root} path={normalizedSlug} /> : currentCategory ? <article><h1>{currentCategory.title}</h1>{currentCategory.description && <p>{currentCategory.description}</p>}</article> : slug === "index" ? <section class="mj-home-hero mj-poster-hero" aria-label="من جمعی؛ یادداشت‌های یک طلبه و پژوهشگر علوم انسانی"><img src={`${root}/static/manejamei-poster.webp`} alt="منِ جمعی — یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1536" height="1024" fetchPriority="high" /></section> : <Content {...componentData} />}
             {isNote && <section data-article-chat data-endpoint={articleChatEndpoint} dir="rtl">
  <button type="button" class="mj-chat-launch" aria-expanded="false">✦ گفت‌وگو با نوشته <span>پرسش، کشف، فهم بهتر</span></button>
  <aside class="mj-chat-panel" hidden aria-label="دستیار مطالعه">
@@ -151,14 +151,14 @@ export const DefaultFrame: PageFrame = {
           <div class="page-footer">{!isLibrary && afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer">
-            <a class="mj-footer-name" href={`${root}/`}>{settings.header.title}</a><span class="mj-footer-tagline">{settings.footer.text}</span>
+            <a class="mj-footer-name mj-footer-logo" href={`${root}/`} aria-label="خانه؛ من جمعی"><img src={`${root}/static/manejamei-seal.webp`} alt="نشان من جمعی" width="80" height="80" loading="lazy" /></a><span class="mj-footer-tagline">یادداشت‌های یک طلبه و پژوهشگر علوم انسانی</span>
             {settings.footer.links.length > 0 && <div class="mj-contact-links">
               {(settings.footer.links as { label: string; href: string }[]).map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
             </div>}
           </footer>
         </div>
         {footer.map((Component) => <Component {...componentData} />)}
-        {settings.backToTop && <button class="mj-back-top" type="button" hidden aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">
+        {<button class="mj-back-top" type="button" hidden aria-label="بازگشت به بالای صفحه" title="بازگشت به بالا">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 12 6-6 6 6M12 6v13" /></svg>
         </button>}
       </>

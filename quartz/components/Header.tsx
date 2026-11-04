@@ -4,34 +4,30 @@ import { QuartzComponent, QuartzComponentConstructor, QuartzComponentProps } fro
 import { pathToRoot } from "../util/path"
 import { settings, siteHref } from "./siteSettings"
 
+const dockIcon = (href: string) => {
+  const path = href.replace(/^\//, "").replace(/\/$/, "")
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    {path.startsWith("resources") ? <><path d="M4 19.5V5a2 2 0 0 1 2-2h13v19H6a2.5 2.5 0 0 1 0-5h13M8 3v10l3-2 3 2V3" /></> : path === "about" ? <><circle cx="12" cy="8" r="3.5" /><path d="M5 21v-2a7 7 0 0 1 14 0v2M8 21h8" /></> : path === "contact" ? <><rect x="3" y="5" width="18" height="14" rx="3" /><path d="m4 7 8 6 8-6" /></> : path.startsWith("notes") ? <><rect x="4" y="3" width="16" height="18" rx="3" /><path d="M8 8h8M8 12h8M8 16h5" /></> : <><path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-7h6v7" /></>}
+  </svg>
+}
+
 const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentProps) => {
   const root = pathToRoot(fileData.slug!)
   const slug = String(fileData.slug ?? "index").replace(/\/index$/, "")
-  const links = settings.header.links
+  const links = [...settings.header.links.filter(link => !link.href.startsWith("/resources")), { label: "منابع", href: "/resources/books" }]
   return (
     <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-heading-row">
         <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><img src={`${root}/static/manejamei-seal.webp`} alt="نشان من جمعی" width="64" height="64" /></a>
-        <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
-          <span class="mj-wordmark">{settings.header.title}</span>
-          <span class="mj-subtitle">{settings.header.subtitle}</span>
-        </a>
         <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
       </div>
-      <nav class="mj-navigation" aria-label="منوی اصلی">
-        {links.map((link, index) => {
-          const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
-          const active = slug === target || (target === "notes" && slug.startsWith("notes/"))
-          return <a key={index} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}>{link.label}</a>
-        })}
-      </nav>
       {children}
       <nav class="mj-mobile-dock" aria-label="دسترسی سریع">
-        {links.map((link, index) => {
+        {links.map((link) => {
           const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
-          const active = slug === target || (target === "notes" && slug.startsWith("notes/"))
-          return <a href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}><span aria-hidden="true">{["⌂", "◉", "▤", "✉"][index % 4]}</span><small>{link.label}</small></a>
+          const active = slug === target || (target === "notes" && slug.startsWith("notes/")) || (target.startsWith("resources/") && slug.startsWith("resources/"))
+          return <a key={link.href} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}>{dockIcon(link.href)}<small>{link.label}</small></a>
         })}
       </nav>
     </header>
