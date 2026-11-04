@@ -89,12 +89,13 @@ export const DefaultFrame: PageFrame = {
     return (
       <>
         {slug === "index" && <style dangerouslySetInnerHTML={{ __html: homeLayoutCSS }} />}
-        <div class="center" style={style}>
+        <div class={isNote ? "center mj-note-page" : "center"} style={style}>
           <div class="page-header">
             <Header {...componentData} tools={left.map((Component) => <Component {...componentData} />)}>
               {header.map((Component) => <Component {...componentData} />)}
             </Header>
-            <div class="popover-hint">{!currentCategory && !isLibrary && beforeBody.map((Component) => <Component {...componentData} />)}
+            <div class="popover-hint">{!isNote && !currentCategory && !isLibrary && beforeBody.map((Component) => <Component {...componentData} />)}
+              {isNote && <h1 class="article-title mj-editorial-title">{String(componentData.fileData.frontmatter?.title ?? "یادداشت")}</h1>}
               {isNote && registeredDate && <p class="mj-note-date" style="display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--gray);margin-block:8px;line-height:1.8"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="4" /><path d="M7 3v4m10-4v4M3 11h18m-12 5h6" /></svg><span>تاریخ ثبت: <time dateTime={registeredDate.iso}>{registeredDate.label}</time></span></p>}
               {isNote && settings.reading.enabled && <p class="mj-reading-time">⏱ حدود {readingMinutes.toLocaleString("fa-IR")} دقیقه مطالعه</p>}
             </div>
