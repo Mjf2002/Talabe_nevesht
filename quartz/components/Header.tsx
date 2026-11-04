@@ -12,10 +12,11 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
     <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-heading-row">
-        {slug !== "index" && <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
+        <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><img src={`${root}/static/manejamei-seal.webp`} alt="نشان من جمعی" width="64" height="64" /></a>
+        <a class="mj-identity" href={`${root}/`} aria-label={`${settings.header.title}؛ خانه`}>
           <span class="mj-wordmark">{settings.header.title}</span>
           <span class="mj-subtitle">{settings.header.subtitle}</span>
-        </a>}
+        </a>
         <div class="mj-tools" aria-label="ابزارهای سایت">{tools}</div>
       </div>
       <nav class="mj-navigation" aria-label="منوی اصلی">
@@ -26,6 +27,13 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
         })}
       </nav>
       {children}
+      <nav class="mj-mobile-dock" aria-label="دسترسی سریع">
+        {links.map((link, index) => {
+          const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
+          const active = slug === target || (target === "notes" && slug.startsWith("notes/"))
+          return <a href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}><span aria-hidden="true">{["⌂", "◉", "▤", "✉"][index % 4]}</span><small>{link.label}</small></a>
+        })}
+      </nav>
     </header>
   )
 }
