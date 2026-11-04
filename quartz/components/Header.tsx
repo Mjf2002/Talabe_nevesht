@@ -15,15 +15,29 @@ const Header: QuartzComponent = ({ children, fileData, tools }: QuartzComponentP
   const root = pathToRoot(fileData.slug!)
   const slug = String(fileData.slug ?? "index").replace(/\/index$/, "")
   const links = [...settings.header.links.filter(link => !link.href.startsWith("/resources")), { label: "منابع", href: "/resources/books" }]
+  const desktopLinks = [
+    { label: "خانه", href: "/" },
+    { label: "فهرست", href: "/notes" },
+    { label: "درباره من", href: "/about" },
+    { label: "ارتباط با من", href: "/contact" },
+    { label: "منابع", href: "/resources/books" },
+  ]
   return (
     <header class="mj-site-header" dir="rtl">
       <a class="mj-skip" href="#mj-main">رفتن به محتوای اصلی</a>
       <div class="mj-top-ribbon" aria-hidden="true"><span /></div>
       <div class="mj-heading-row">
-        <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><img src={`${root}/static/manejamei-header-logo.webp`} alt="من جمعی؛ یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1500" height="550" /></a>
+        <a class="mj-brand-seal" href={`${root}/`} aria-label="خانه"><picture><source media="(min-width: 801px)" srcSet={`${root}/static/manejamei-header-complete.webp`} width="1536" height="600" /><img src={`${root}/static/manejamei-header-logo.webp`} alt="من جمعی؛ یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1500" height="550" /></picture></a>
         <a class="mj-mobile-brand" href={`${root}/`} aria-label="من جمعی؛ خانه"><img src={`${root}/static/man-jamei-logo.webp`} alt="من جمعی" width="364" height="366" /></a>
         <a class="mj-mobile-headline" href={`${root}/`} aria-label="یادداشت‌های یک طلبه و پژوهشگر علوم انسانی"><img src={`${root}/static/manejamei-headline.webp`} alt="یادداشت‌های یک طلبه و پژوهشگر علوم انسانی" width="1087" height="300" /></a>
-        <nav class="mj-mobile-dock mj-primary-nav" aria-label="ناوبری اصلی">
+        <nav class="mj-primary-nav mj-desktop-nav" aria-label="ناوبری اصلی">
+          {desktopLinks.map((link) => {
+            const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
+            const active = slug === target || (target === "notes" && slug.startsWith("notes/")) || (target.startsWith("resources/") && slug.startsWith("resources/"))
+            return <a key={link.href} href={siteHref(link.href, root)} aria-current={active ? "page" : undefined}><small>{link.label}</small></a>
+          })}
+        </nav>
+        <nav class="mj-mobile-dock mj-primary-nav mj-mobile-nav" aria-label="ناوبری اصلی">
           {links.map((link) => {
             const target = link.href.replace(/^\//, "").replace(/\/$/, "") || "index"
             const active = slug === target || (target === "notes" && slug.startsWith("notes/")) || (target.startsWith("resources/") && slug.startsWith("resources/"))

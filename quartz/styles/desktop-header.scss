@@ -1,8 +1,14 @@
-/* Desktop header only. Import after unified-layout.scss.
- * Equal outer tracks keep the menu at the true centre of the header.
- * Keep mobile rules and the existing search/theme event handlers unchanged.
- */
+/* Step 3: desktop-only navigation; keep mobile artwork and menu unchanged. */
+@media (max-width: 800px) {
+  header.mj-site-header .mj-desktop-nav { display: none !important; }
+}
 @media (min-width: 801px) {
+  header.mj-site-header .mj-mobile-nav { display: none !important; }
+  /* Only search and theme controls (or their layout wrappers) are visible. */
+  header.mj-site-header .mj-tools > :not(.search):not(.darkmode):not(:has(.search, .darkmode)),
+  header.mj-site-header .mj-tools .flex-component > :not(.search):not(.darkmode):not(:has(.search, .darkmode)) {
+    display: none !important;
+  }
   header.mj-site-header .mj-heading-row {
     direction: rtl;
     display: grid;
@@ -24,7 +30,7 @@
     box-shadow: none;
     isolation: auto;
   }
-  /* The source logo has a white matte: multiply visually removes it in light mode. */
+  /* Use the supplied RGBA artwork without blending away its gold colour. */
   header.mj-site-header .mj-brand-seal img {
     display: block;
     width: 100%;
@@ -34,11 +40,12 @@
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-    mix-blend-mode: multiply;
+    mix-blend-mode: normal;
+    filter: none;
   }
   :root[saved-theme="dark"] header.mj-site-header .mj-brand-seal img {
-    mix-blend-mode: screen;
-    filter: invert(1) hue-rotate(180deg);
+    mix-blend-mode: normal;
+    filter: none;
   }
   header.mj-site-header .mj-primary-nav {
     grid-column: 2;
