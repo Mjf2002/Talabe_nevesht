@@ -249,3 +249,64 @@ body .mj-back-top { left:18px; right:auto; }
  .center .mj-tools .search { width:165px; flex-basis:165px; }
  .center .mj-top-ribbon { margin-bottom:16px; height:7px; width:92%; }
 }
+
+/* v10: global selectors intentionally do not depend on a .center ancestor. */
+body header.mj-site-header.mj-header-v9 {
+ display:grid !important; grid-template-columns:minmax(0,1fr) !important;
+ width:100% !important; max-width:960px !important; box-sizing:border-box;
+ margin:0 auto 24px !important; padding:16px 16px 0 !important;
+ gap:0 !important; align-items:stretch !important;
+}
+body header.mj-header-v9 > .mj-top-ribbon {
+ position:static !important; display:block; width:100% !important;
+ height:5px !important; margin:0 auto 20px !important;
+ border-radius:0 0 999px 999px;
+}
+body header.mj-header-v9 > .mj-heading-row {
+ display:flex !important; flex-direction:row !important; flex-wrap:nowrap !important;
+ justify-content:space-between !important; align-items:center !important;
+ width:100% !important; margin:0 !important; padding:0 0 18px !important; gap:20px !important;
+}
+body header.mj-header-v9 .mj-brand-seal {
+ display:block !important; width:220px !important; max-width:45% !important;
+ margin:0 !important; padding:0 !important; flex:0 1 220px !important;
+}
+body header.mj-header-v9 .mj-brand-seal img { display:block; width:100% !important; height:auto !important; margin:0 !important; }
+body header.mj-header-v9 .mj-heading-row > .mj-tools {
+ position:static !important; display:flex !important; align-items:center !important;
+ align-self:center !important; margin:0 !important; padding:0 !important; width:auto !important;
+}
+body header.mj-header-v9 .mj-tools .flex-component { display:flex !important; align-items:center !important; gap:10px !important; }
+body header.mj-header-v9 .search { width:130px !important; flex:0 0 130px !important; }
+body header.mj-header-v9 .search > .search-button {
+ display:flex !important; align-items:center !important; justify-content:center !important;
+ width:130px !important; height:42px !important; min-height:42px !important;
+ padding:0 10px !important; gap:8px !important; font-size:0 !important;
+}
+body header.mj-header-v9 .search > .search-button > * { display:none !important; }
+body header.mj-header-v9 .search > .search-button > svg {
+ display:block !important; position:static !important; inset:auto !important;
+ transform:none !important; width:19px !important; height:19px !important; margin:0 !important;
+}
+body header.mj-header-v9 .search > .search-button::after {
+ content:'جستجو' !important; display:block !important; font-size:13px !important; line-height:1.5;
+}
+body .mj-mobile-dock {
+ display:flex !important; position:fixed !important; left:50% !important; right:auto !important;
+ inset-inline:auto !important; transform:translateX(-50%) !important;
+ bottom:calc(12px + env(safe-area-inset-bottom)) !important;
+ width:max-content !important; max-width:calc(100vw - 24px) !important;
+ box-sizing:border-box !important; border-radius:999px !important;
+ justify-content:center !important; align-items:center !important;
+ gap:22px !important; padding:8px 24px !important;
+ box-shadow:0 4px 22px #0004; z-index:100;
+}
+body .mj-mobile-dock a { flex:0 1 auto !important; min-width:0 !important; }
+@media(max-width:600px) {
+ body header.mj-header-v9 .mj-brand-seal { width:170px !important; flex-basis:170px !important; }
+ body header.mj-header-v9 > .mj-heading-row { gap:10px !important; flex-wrap:wrap !important; justify-content:center !important; }
+ body .mj-mobile-dock { width:calc(100vw - 24px) !important; gap:3px !important; padding:8px 12px !important; }
+ body .mj-mobile-dock a { flex:1 1 0 !important; min-height:42px !important; padding:5px 2px !important; }
+ body .mj-mobile-dock a svg { width:22px !important; height:22px !important; }
+ body .mj-mobile-dock a small { font-size:10px !important; white-space:nowrap; }
+}
