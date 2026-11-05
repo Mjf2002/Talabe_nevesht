@@ -253,12 +253,30 @@ export async function loadQuartzConfig(
   if (!json) {
     // Fallback: import old-style config directly
     const oldConfig = await import("../../../quartz")
-    return oldConfig.default
+    return {
+      ...oldConfig.default,
+      configuration: {
+        ...oldConfig.default.configuration,
+        theme: {
+          ...oldConfig.default.configuration.theme,
+          fontOrigin: "local",
+          cdnCaching: false,
+        },
+      },
+    }
   }
 
   const configuration = {
     ...(json.configuration as unknown as GlobalConfiguration),
     ...configOverrides,
+  }
+
+  // Same-origin fonts: enforce after resolving YAML and runtime overrides.
+  // Keep typography names and all other theme settings unchanged.
+  configuration.theme = {
+    ...configuration.theme,
+    fontOrigin: "local",
+    cdnCaching: false,
   }
 
   const enabledEntries = json.plugins.filter((e) => e.enabled)
