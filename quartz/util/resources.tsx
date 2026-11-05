@@ -23,13 +23,23 @@ export type CSSResource = {
   spaPreserve?: boolean
 }
 
+// Keep render-blocking KaTeX assets on the same origin as the site.
+// Only these pinned, vendored files are rewritten; other resources are unchanged.
+function localResourceUrl(url: string): string {
+  const assets: Record<string, string> = {
+    "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css": "/static/vendor/katex/katex.min.css",
+    "https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js": "/static/vendor/katex/contrib/copy-tex.min.js",
+  }
+  return assets[url] ?? url
+}
+
 export function JSResourceToScriptElement(resource: JSResource, preserve?: boolean): JSX.Element {
   const scriptType = resource.moduleType ?? "application/javascript"
   const spaPreserve = preserve ?? resource.spaPreserve
 
   if (resource.contentType === "external") {
     return (
-      <script key={resource.src} src={resource.src} type={scriptType} data-persist={spaPreserve} />
+      <script key={resource.src} src={localResourceUrl(resource.src)} type={scriptType} data-persist={spaPreserve} />
     )
   } else {
     const content = resource.script
@@ -52,7 +62,7 @@ export function CSSResourceToStyleElement(resource: CSSResource, preserve?: bool
     return (
       <link
         key={resource.content}
-        href={resource.content}
+        href={localResourceUrl(resource.content)}
         rel="stylesheet"
         type="text/css"
         data-persist={spaPreserve}
