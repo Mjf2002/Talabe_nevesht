@@ -49,6 +49,9 @@ jobs:
       - name: Build site
         run: npx quartz build -d .i18n-build/content
 
+      - name: Verify published resources
+        run: node tools/check-published-resources.mjs public
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
