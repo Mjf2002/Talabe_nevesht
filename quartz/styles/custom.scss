@@ -160,3 +160,18 @@ body .mj-back-top { left:18px; right:auto; }
 @import "./desktop-header.scss";
 @import "./mobile-header.scss";
 @import "./topic-editorial.scss";
+
+
+/* Theme button shows the destination, rather than the current theme. */
+:root:not([saved-theme="dark"]) .darkmode > .dayIcon {
+  display: none !important;
+}
+:root:not([saved-theme="dark"]) .darkmode > .nightIcon {
+  display: inline !important;
+}
+:root[saved-theme="dark"] .darkmode > .dayIcon {
+  display: inline !important;
+}
+:root[saved-theme="dark"] .darkmode > .nightIcon {
+  display: none !important;
+}
