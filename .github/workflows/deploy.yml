@@ -36,7 +36,7 @@ jobs:
         run: npx quartz plugin install
 
       - name: Test panel and language preparation
-        run: node --test mobile-panel/tests.mjs tools/prepare-languages.test.mjs article-chat/server.test.mjs
+        run: node --test mobile-panel/tests.mjs tools/prepare-languages.test.mjs article-chat/server.test.mjs tools/plugins/image-optimizer.test.mjs
 
       - name: Type check
         run: npx tsc --noEmit
@@ -50,6 +50,7 @@ jobs:
         run: |
           npx quartz build -d .i18n-build/content
           node tools/render-local-og.mjs public
+          node tools/plugins/image-optimizer.mjs public
 
       - name: Verify published resources
         run: node tools/check-published-resources.mjs public
