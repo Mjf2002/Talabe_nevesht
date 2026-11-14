@@ -15,8 +15,8 @@ configuration:
     - templates
     - .obsidian
   theme:
-    fontOrigin: googleFonts
-    cdnCaching: true
+    fontOrigin: local
+    cdnCaching: false
     typography:
       header: Schibsted Grotesk
       body: Source Sans Pro
@@ -100,8 +100,10 @@ plugins:
   - source: "@quartz-community/roam"
     enabled: false
     order: 92
+  # Local @font-face rules in quartz/styles/custom.scss supply the site fonts.
+  # Keep the Google Fonts plugin disabled to avoid adding CDN tags to every page.
   - source: "@quartz-community/quartz-fonts"
-    enabled: true
+    enabled: false
   - source: "@quartz-themes/core"
     enabled: false
     options:
