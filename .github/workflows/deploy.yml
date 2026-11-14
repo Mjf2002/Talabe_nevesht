@@ -47,7 +47,9 @@ jobs:
           TRANSLATION_API_KEY: ${{ secrets.TRANSLATION_API_KEY }}
 
       - name: Build site
-        run: npx quartz build -d .i18n-build/content
+        run: |
+          npx quartz build -d .i18n-build/content
+          node tools/render-local-og.mjs public
 
       - name: Verify published resources
         run: node tools/check-published-resources.mjs public
