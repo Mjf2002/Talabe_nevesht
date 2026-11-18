@@ -53,6 +53,17 @@ jobs:
           node tools/plugins/image-optimizer.mjs public
 
       - name: Verify published resources
+            - name: Upload site to Arvan Object Storage
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ARVAN_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ARVAN_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ir-central1
+        run: |
+          test -f public/index.html
+          aws s3 sync public/ s3://manejamei/ \
+            --endpoint-url https://s3.ir-central1.arvanstorage.ir \
+            --acl public-read
+
         run: node tools/check-published-resources.mjs public
 
       - name: Upload site
