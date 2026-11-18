@@ -52,8 +52,10 @@ jobs:
           node tools/render-local-og.mjs public
           node tools/plugins/image-optimizer.mjs public
 
-      - name: Verify published resources
-            - name: Upload site to Arvan Object Storage
+            - name: Verify published resources
+        run: node tools/check-published-resources.mjs public
+
+      - name: Upload site to Arvan Object Storage
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ARVAN_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ARVAN_SECRET_ACCESS_KEY }}
@@ -63,8 +65,6 @@ jobs:
           aws s3 sync public/ s3://manejamei/ \
             --endpoint-url https://s3.ir-central1.arvanstorage.ir \
             --acl public-read
-
-        run: node tools/check-published-resources.mjs public
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
