@@ -52,7 +52,7 @@ jobs:
           node tools/render-local-og.mjs public
           node tools/plugins/image-optimizer.mjs public
 
-            - name: Verify published resources
+      - name: Verify published resources
         run: node tools/check-published-resources.mjs public
 
       - name: Upload site to Arvan Object Storage
