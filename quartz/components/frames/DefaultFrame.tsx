@@ -145,7 +145,7 @@ export const DefaultFrame: PageFrame = {
           <div class="page-footer">{!isLibrary && afterBody.map((Component) => <Component {...componentData} />)}</div>
           <aside class="mj-reading-tools" aria-label="ابزارهای مطالعه">{right.map((Component) => <Component {...componentData} />)}</aside>
           <footer class="mj-site-footer">
-            <a class="mj-footer-name mj-footer-logo" href={`${root}/`} aria-label="خانه؛ من جمعی"><img src={`${root}/static/manejamei-seal.webp`} alt="نشان من جمعی" width="80" height="80" loading="lazy" /></a><span class="mj-footer-tagline">یادداشت‌های یک طلبه و پژوهشگر علوم انسانی</span>
+            <a class="mj-footer-name mj-footer-logo" href={`${root}/`} aria-label="خانه؛ من جمعی"><img src={`${root}/static/manejamei-seal.webp`} alt="نشان من جمعی" width="80" height="80" loading="lazy" /></a><span class="mj-footer-tagline">اندیشیدن درباره اندیشه ها</span>
             {settings.footer.links.length > 0 && <div class="mj-contact-links">
               {(settings.footer.links as { label: string; href: string }[]).map((link, index) => <a key={index} href={siteHref(link.href, root)}>{link.label}</a>)}
             </div>}
